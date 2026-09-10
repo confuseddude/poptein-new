@@ -1,0 +1,273 @@
+/* ==========================================================================
+   Product sphere — four packs on an invisible orbital field.
+   Depth comes from scale, z-index, blur, shadow and opacity, all set in JS
+   as a single transform per pack. No WebGL, no per-frame layout.
+   ========================================================================== */
+
+.orbit {
+  height: 380vh;
+  background: var(--flavour-bg);
+  transition: background-color .75s var(--ease-out);
+}
+
+.orbit__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+/* The field the packs move through. A soft radial falloff, never a drawn
+   circle — the sphere should be felt in the depth cues, not outlined. */
+.orbit__halo {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(58% 46% at 50% 44%,
+      var(--flavour-deep) 0%,
+      transparent 68%);
+  opacity: .62;
+  transition: background .75s var(--ease-out);
+  pointer-events: none;
+}
+/* a low floor-shadow so the foreground pack feels like it is standing in
+   the space rather than pasted on it */
+.orbit__halo::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 62%;
+  width: min(46vw, 380px);
+  height: 46px;
+  transform: translateX(-50%);
+  background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, .34), transparent 72%);
+}
+
+/* oversized flavour word sitting behind the packs */
+.orbit__ghost {
+  position: absolute;
+  left: 50%; top: 30%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-family: Anton, Impact, sans-serif;
+  font-size: clamp(46px, 12.5vw, 168px);
+  line-height: .82;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  color: var(--flavour-accent);
+  opacity: .34;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: color .75s var(--ease-out), opacity .4s var(--ease-out);
+}
+
+/* --- stage ---------------------------------------------------------------- */
+.orbit__stage {
+  position: absolute;
+  inset: 0;
+  touch-action: pan-y;
+}
+
+.orbit__pack {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  width: var(--pack-w, 280px);
+  transform-origin: 50% 50%;
+  /* filter is deliberately absent — hinting it keeps a filter layer alive for
+     the whole page, and blur only changes at quantised steps anyway */
+  will-change: transform, opacity;
+  transition:
+    transform .62s var(--ease-pop),
+    opacity   .45s var(--ease-out),
+    filter    .45s var(--ease-out);
+}
+/* the shadow is static CSS so no filter is rebuilt on a scroll frame */
+.orbit__pack img {
+  width: 100%;
+  filter: drop-shadow(0 24px 26px rgba(15, 13, 10, .38));
+}
+
+/* while the user is dragging, follow the finger without easing */
+.orbit.is-dragging .orbit__pack { transition: none; }
+
+/* --- ui ------------------------------------------------------------------- */
+.orbit__ui {
+  position: relative;
+  z-index: 5;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px clamp(20px, 4vw, 48px);
+  padding: clamp(16px, 2.4vw, 30px) var(--gutter)
+           max(clamp(20px, 3vw, 38px), env(safe-area-inset-bottom, 0px));
+  max-width: var(--measure);
+  margin-inline: auto;
+  width: 100%;
+  pointer-events: none;
+}
+.orbit__ui a,
+.orbit__ui button { pointer-events: auto; }
+
+.orbit__info {
+  flex: 1 1 min(100%, 320px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  transition: transform .5s var(--ease-pop);
+}
+.orbit.is-popping .orbit__info { transform: translateY(-6px); }
+
+.orbit__count {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--flavour-accent);
+  transition: color .75s var(--ease-out);
+}
+.orbit__count i { font-style: normal; opacity: .6; }
+
+.orbit__name {
+  margin: 0;
+  font-family: Anton, Impact, sans-serif;
+  font-weight: 400;
+  font-size: clamp(32px, 5.6vw, 64px);
+  line-height: .92;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+.orbit__desc {
+  margin: 0 0 6px;
+  max-width: 30ch;
+  font-size: clamp(15px, 1.5vw, 17px);
+  font-weight: 500;
+  line-height: 1.42;
+  color: var(--cream);
+}
+/* the copy swaps with the pack — a short crossfade, not a slide */
+.orbit__name, .orbit__desc, .orbit__count span { transition: opacity .22s linear; }
+.orbit.is-swapping .orbit__name,
+.orbit.is-swapping .orbit__desc,
+.orbit.is-swapping .orbit__count span { opacity: 0; }
+
+.orbit__controls {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.orbit__dots { display: flex; gap: 6px; }
+.orbit__dots button {
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+}
+.orbit__dots span {
+  display: block;
+  width: 10px; height: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 100px;
+  background: rgba(255, 243, 214, .34);
+  transition: width .38s var(--ease-out), background-color .38s var(--ease-out);
+}
+.orbit__dots button[aria-pressed="true"] span { width: 34px; background: var(--cream); }
+@media (hover: hover) {
+  .orbit__dots button:hover span { background: var(--cream); }
+}
+
+.orbit__hint {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  /* solid, not tinted — at 10px this has to clear 4.5:1 on every world */
+  color: var(--cream);
+  text-align: right;
+}
+
+/* --- narrow: the info block leads, controls sit under it ------------------ */
+@media (max-width: 700px) {
+  .orbit__ui {
+    flex-direction: column;
+    /* wrap must go with the direction change, or the column overflows its
+       height and the controls wrap sideways off the screen */
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .orbit__info { flex: 0 0 auto; }
+  .orbit__controls {
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .orbit__hint { text-align: right; flex: 1 1 auto; white-space: nowrap; }
+  .orbit__dots { margin-left: -10px; }
+  .orbit__info .btn { align-self: stretch; }
+  .orbit__ghost { top: 34%; }
+}
+
+/* --- reduced motion: the orbit becomes an honest four-up ------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .orbit { height: auto; padding-block: var(--section-y); }
+  .orbit__sticky {
+    position: static;
+    height: auto;
+    min-height: 0;
+    display: block;
+  }
+  .orbit__halo, .orbit__ghost { display: none; }
+  .orbit__stage {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+    gap: clamp(14px, 2vw, 28px);
+    max-width: var(--measure);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  .orbit__pack {
+    position: static;
+    width: 100%;
+    text-align: left;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+  .orbit__caption {
+    display: block;
+    padding-top: 12px;
+    color: var(--cream);
+  }
+  .orbit__caption b {
+    display: block;
+    font-family: Anton, Impact, sans-serif;
+    font-weight: 400;
+    font-size: clamp(19px, 2.4vw, 26px);
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin-bottom: 4px;
+  }
+  .orbit__caption { font-size: 13px; line-height: 1.45; }
+
+  .orbit__ui {
+    padding-top: clamp(26px, 4vw, 44px);
+    justify-content: flex-start;
+  }
+}

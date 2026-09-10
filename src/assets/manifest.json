@@ -1,0 +1,159 @@
+{
+  "poptein-logo": {
+    "w": 534,
+    "h": 190,
+    "widths": [
+      300
+    ]
+  },
+  "pack-peanut-butter": {
+    "w": 496,
+    "h": 690,
+    "widths": [
+      340,
+      500
+    ]
+  },
+  "pack-brownie": {
+    "w": 514,
+    "h": 715,
+    "widths": [
+      340,
+      500
+    ]
+  },
+  "pack-kimchi": {
+    "w": 505,
+    "h": 701,
+    "widths": [
+      340,
+      500
+    ]
+  },
+  "pack-herb-n-zing": {
+    "w": 514,
+    "h": 714,
+    "widths": [
+      340,
+      500
+    ]
+  },
+  "pop-plain": {
+    "w": 493,
+    "h": 413,
+    "widths": [
+      200
+    ]
+  },
+  "pop-peanut-butter": {
+    "w": 227,
+    "h": 341,
+    "widths": [
+      200
+    ]
+  },
+  "story-kids": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "story-festival": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "story-cinema": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "story-athlete": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "craft-bowls": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "craft-brownie": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "craft-table": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "social-coupes": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "social-orange": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "social-team": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "social-sunset": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "social-paddle": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  },
+  "retail-basket": {
+    "w": 462,
+    "h": 616,
+    "widths": [
+      400,
+      462
+    ]
+  }
+}

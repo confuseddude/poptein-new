@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; padding:0; background:#F26F21; overflow-x:hidden; }
+  body { font-family:'Poppins', system-ui, sans-serif; color:#0F0D0A; -webkit-font-smoothing:antialiased; }
+  * { box-sizing:border-box; }
+  a { color:#0F0D0A; text-decoration:none; }
+  a:hover { color:#FFFFFF; }
+  img { max-width:100%; display:block; }
+  button { font-family:inherit; cursor:pointer; }
+  ::selection { background:#0F0D0A; color:#FFC93D; }
+  @keyframes kshake { 0%,100%{transform:translate(0,0) rotate(0deg) scaleY(1)} 15%{transform:translate(-2px,1px) rotate(-7deg) scaleY(.96)} 35%{transform:translate(2px,-1px) rotate(6deg) scaleY(1.05)} 55%{transform:translate(-2px,-1px) rotate(-5deg) scaleY(.97)} 75%{transform:translate(2px,1px) rotate(8deg) scaleY(1.04)} }
+  @keyframes kcorn { 0%{transform:scale(.15) rotate(-25deg); opacity:0} 40%{transform:scale(1.32) rotate(6deg); opacity:1} 62%{transform:scale(.9) rotate(-3deg)} 80%{transform:scale(1.07) rotate(1deg)} 100%{transform:scale(1) rotate(0deg); opacity:1} }
+  @keyframes klogo { 0%{transform:scale(.6) translateY(14px); opacity:0} 55%{transform:scale(1.07) translateY(0)} 100%{transform:scale(1) translateY(0); opacity:1} }
+  @keyframes kring { 0%{transform:scale(.2); opacity:.9; border-width:14px} 100%{transform:scale(2.6); opacity:0; border-width:1px} }
+  @keyframes kf1 { to{transform:translate(-96px,-74px) scale(.3) rotate(-140deg); opacity:0} }
+  @keyframes kf2 { to{transform:translate(88px,-92px) scale(.3) rotate(120deg); opacity:0} }
+  @keyframes kf3 { to{transform:translate(-118px,34px) scale(.35) rotate(-80deg); opacity:0} }
+  @keyframes kf4 { to{transform:translate(112px,46px) scale(.3) rotate(150deg); opacity:0} }
+  @keyframes kf5 { to{transform:translate(-34px,-116px) scale(.35) rotate(60deg); opacity:0} }
+  @keyframes kf6 { to{transform:translate(46px,104px) scale(.3) rotate(-110deg); opacity:0} }
+  @keyframes marq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  @keyframes marqr { from{transform:translateX(-50%)} to{transform:translateX(0)} }
+  @keyframes bob { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-10px) rotate(-1deg)} }
+</style>
+</helmet>
+
+<div style="max-width:100%; overflow-x:clip">
+
+<sc-if value="{{ loaderOn }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed; inset:0; z-index:300; background:#F26F21; display:flex; align-items:center; justify-content:center; opacity:{{ loaderOpacity }}; transition:opacity .45s ease">
+    <div style="position:relative; width:min(76vw,420px); height:300px; display:flex; align-items:center; justify-content:center">
+
+      <sc-if value="{{ showKernel }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute; width:30px; height:34px; background:linear-gradient(160deg,#F5D07A,#B9761B); border:2px solid #0F0D0A; border-radius:52% 48% 44% 56% / 58% 60% 40% 42%; animation:kshake .3s linear infinite"></div>
+      </sc-if>
+
+      <sc-if value="{{ showBurst }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; width:70px; height:70px; border:10px solid #FFF3D6; border-radius:50%; animation:kring .5s ease-out forwards"></div>
+      </sc-if>
+
+      <sc-for list="{{ frags }}" as="p" hint-placeholder-count="0">
+        <div style="position:absolute; width:{{ p.size }}px; height:{{ p.size }}px; background:#FFF3D6; border:2px solid #0F0D0A; border-radius:50% 46% 54% 48%; animation:{{ p.kf }} .85s cubic-bezier(.2,.7,.3,1) forwards"></div>
+      </sc-for>
+
+      <sc-if value="{{ showCorn }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; width:120px; height:110px; animation:kcorn .62s cubic-bezier(.22,1.5,.4,1) forwards; transform-origin:50% 70%">
+          <div style="position:absolute; left:26px; top:34px; width:56px; height:54px; background:#FFF3D6; border:3px solid #0F0D0A; border-radius:50%"></div>
+          <div style="position:absolute; left:4px; top:44px; width:44px; height:42px; background:#FFF3D6; border:3px solid #0F0D0A; border-radius:50%"></div>
+          <div style="position:absolute; left:62px; top:48px; width:46px; height:44px; background:#FFEBBE; border:3px solid #0F0D0A; border-radius:50%"></div>
+          <div style="position:absolute; left:16px; top:6px; width:42px; height:40px; background:#FFF3D6; border:3px solid #0F0D0A; border-radius:50%"></div>
+          <div style="position:absolute; left:52px; top:2px; width:40px; height:40px; background:#FFEBBE; border:3px solid #0F0D0A; border-radius:50%"></div>
+          <div style="position:absolute; left:40px; top:26px; width:34px; height:32px; background:#FFFBF0; border:3px solid #0F0D0A; border-radius:50%"></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showLogo }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; display:flex; flex-direction:column; align-items:center; gap:16px; animation:klogo .5s cubic-bezier(.2,1.5,.4,1) forwards">
+          <img src="uploads/Poptein-Logo.avif" alt="Poptein" style="width:min(58vw,260px)" />
+          <span style="font-size:10px; font-weight:700; letter-spacing:.42em; color:#0F0D0A">POP YOUR PROTEIN GAME</span>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</sc-if>
+
+<header style="position:sticky; top:0; z-index:120; background:#F26F21; border-bottom:2px solid #0F0D0A">
+  <div style="max-width:1440px; margin:0 auto; padding:10px clamp(14px,3.4vw,34px); display:flex; align-items:center; gap:14px">
+    <a href="#top" style="flex:0 0 auto; display:block"><img src="uploads/Poptein-Logo.avif" alt="Poptein" style="width:clamp(104px,13vw,146px)" /></a>
+    <div style="flex:1"></div>
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex; gap:clamp(16px,2.2vw,30px); align-items:center">
+        <a href="#orbit" style="font-size:12px; font-weight:700; letter-spacing:.14em">FLAVOURS</a>
+        <a href="#story" style="font-size:12px; font-weight:700; letter-spacing:.14em">OUR STORY</a>
+        <a href="#why" style="font-size:12px; font-weight:700; letter-spacing:.14em">WHY POPTEIN</a>
+        <a href="#faq" style="font-size:12px; font-weight:700; letter-spacing:.14em">FAQ</a>
+      </nav>
+    </sc-if>
+    <a href="#buy" style="flex:0 0 auto; background:#FFC93D; color:#0F0D0A; border:2px solid #0F0D0A; box-shadow:3px 3px 0 #0F0D0A; padding:0 18px; min-height:44px; display:inline-flex; align-items:center; border-radius:8px; font-size:12px; font-weight:800; letter-spacing:.12em" style-hover="background:#0F0D0A; color:#FFC93D; box-shadow:0 0 0 #0F0D0A">SHOP NOW</a>
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ toggleMenu }}" aria-label="Menu" style="width:44px; height:44px; background:transparent; border:2px solid #0F0D0A; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px">
+        <span style="width:16px; height:2px; background:#0F0D0A; display:block"></span>
+        <span style="width:16px; height:2px; background:#0F0D0A; display:block"></span>
+      </button>
+    </sc-if>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="border-top:2px solid #0F0D0A; padding:6px clamp(14px,4vw,34px) 18px; display:flex; flex-direction:column">
+      <a href="#orbit" onClick="{{ closeMenu }}" style="padding:14px 0; font-family:'Anton'; font-size:30px; letter-spacing:.01em; border-bottom:1px solid rgba(15,13,10,.25)">FLAVOURS</a>
+      <a href="#story" onClick="{{ closeMenu }}" style="padding:14px 0; font-family:'Anton'; font-size:30px; border-bottom:1px solid rgba(15,13,10,.25)">OUR STORY</a>
+      <a href="#why" onClick="{{ closeMenu }}" style="padding:14px 0; font-family:'Anton'; font-size:30px; border-bottom:1px solid rgba(15,13,10,.25)">WHY POPTEIN</a>
+      <a href="#faq" onClick="{{ closeMenu }}" style="padding:14px 0; font-family:'Anton'; font-size:30px">FAQ</a>
+    </div>
+  </sc-if>
+</header>
+
+<main id="top" style="max-width:100%">
+
+  <section style="position:relative; background:#F26F21; overflow:hidden; border-bottom:2px solid #0F0D0A">
+    <div style="position:absolute; left:-6vw; top:8%; width:44vw; height:44vw; max-width:520px; max-height:520px; border:2px solid rgba(15,13,10,.22); border-radius:50%"></div>
+    <div style="position:absolute; right:-10vw; bottom:-6vw; width:38vw; height:38vw; max-width:440px; max-height:440px; background:#E85C12; border-radius:50%"></div>
+    <div style="position:relative; max-width:1440px; margin:0 auto; padding:clamp(22px,4vw,52px) clamp(14px,3.4vw,34px) 0">
+      <div style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:clamp(6px,1.4vw,18px)">
+        <h1 style="margin:0; font-family:'Anton'; font-size:clamp(58px,15.5vw,206px); line-height:.82; letter-spacing:-.015em; text-transform:uppercase; color:#0F0D0A">
+          PROTEIN<br />
+          <span style="display:inline-block; color:#FFF3D6; -webkit-text-stroke:3px #0F0D0A; padding-left:.06em">POPCORN</span>
+        </h1>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; align-items:flex-start; gap:clamp(18px,3vw,40px); margin-top:clamp(-6px,-.4vw,0px)">
+        <div style="flex:1 1 min(100%,290px); min-width:0; display:flex; flex-direction:column; gap:18px; padding-bottom:clamp(24px,4vw,56px)">
+          <p style="margin:0; max-width:26ch; font-size:clamp(16px,4.2vw,20px); font-weight:500; line-height:1.42; color:#0F0D0A">India's first protein popcorn. Popped in olive oil, 10g plant protein a serve, and absolutely no weird aftertaste.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:10px">
+            <a href="#buy" style="background:#0F0D0A; color:#FFC93D; border:2px solid #0F0D0A; box-shadow:4px 4px 0 #FFF3D6; padding:0 24px; min-height:54px; border-radius:10px; display:inline-flex; align-items:center; font-size:13px; font-weight:800; letter-spacing:.14em" style-hover="background:#FFC93D; color:#0F0D0A">WHERE TO BUY</a>
+            <a href="#orbit" style="background:transparent; border:2px solid #0F0D0A; padding:0 24px; min-height:54px; border-radius:10px; display:inline-flex; align-items:center; font-size:13px; font-weight:800; letter-spacing:.14em" style-hover="background:#FFF3D6">SPIN THE FLAVOURS</a>
+          </div>
+        </div>
+        <div style="flex:1 1 min(100%,340px); min-width:0; position:relative; display:flex; justify-content:center; align-items:flex-end; min-height:clamp(280px,38vw,470px)">
+          <div style="position:absolute; bottom:clamp(30px,5vw,70px); width:min(72%,330px); aspect-ratio:1; background:#FFC93D; border:2px solid #0F0D0A; border-radius:50%"></div>
+          <img src="uploads/PEANUT-BUTTER.avif" alt="Poptein Peanut Butter protein popcorn pack" style="position:relative; z-index:2; width:min(80%,360px); margin-bottom:-2px; filter:drop-shadow(0 22px 28px rgba(15,13,10,.35)); animation:bob 5s ease-in-out infinite" />
+          <div style="position:absolute; z-index:3; right:2%; top:clamp(4px,2vw,26px); background:#FFF3D6; border:2px solid #0F0D0A; border-radius:100px; padding:9px 15px; font-size:11px; font-weight:800; letter-spacing:.1em; transform:rotate(8deg)">10G PROTEIN</div>
+          <div style="position:absolute; z-index:3; left:0; bottom:clamp(52px,8vw,110px); background:#0F0D0A; color:#FFF3D6; border-radius:100px; padding:9px 15px; font-size:11px; font-weight:800; letter-spacing:.1em; transform:rotate(-7deg)">NO PALM OIL</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="background:#0F0D0A; color:#FFF3D6; padding:12px 0; overflow:hidden; white-space:nowrap; border-bottom:2px solid #0F0D0A">
+    <div style="display:inline-flex; animation:marq 24s linear infinite; font-family:'Anton'; font-size:clamp(20px,4.4vw,30px); letter-spacing:.02em">
+      <span>POP YOUR PROTEIN GAME&nbsp;&nbsp;★&nbsp;&nbsp;110+ STORES&nbsp;&nbsp;★&nbsp;&nbsp;GLUTEN FREE&nbsp;&nbsp;★&nbsp;&nbsp;NON GMO&nbsp;&nbsp;★&nbsp;&nbsp;POP YOUR PROTEIN GAME&nbsp;&nbsp;★&nbsp;&nbsp;110+ STORES&nbsp;&nbsp;★&nbsp;&nbsp;GLUTEN FREE&nbsp;&nbsp;★&nbsp;&nbsp;NON GMO&nbsp;&nbsp;★&nbsp;&nbsp;</span>
+      <span>POP YOUR PROTEIN GAME&nbsp;&nbsp;★&nbsp;&nbsp;110+ STORES&nbsp;&nbsp;★&nbsp;&nbsp;GLUTEN FREE&nbsp;&nbsp;★&nbsp;&nbsp;NON GMO&nbsp;&nbsp;★&nbsp;&nbsp;POP YOUR PROTEIN GAME&nbsp;&nbsp;★&nbsp;&nbsp;110+ STORES&nbsp;&nbsp;★&nbsp;&nbsp;GLUTEN FREE&nbsp;&nbsp;★&nbsp;&nbsp;NON GMO&nbsp;&nbsp;★&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+  <section id="orbit" ref="{{ orbitRef }}" style="position:relative; height:380vh">
+    <div style="position:sticky; top:0; height:100vh; min-height:560px; overflow:hidden; background:{{ envBg }}; transition:background .7s ease">
+      <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none">
+        <div style="width:min(86vw,760px); aspect-ratio:1; border-radius:50%; background:{{ envDeep }}; opacity:.55; transition:background .7s ease"></div>
+      </div>
+      <div style="position:absolute; left:0; right:0; top:50%; display:flex; justify-content:center; pointer-events:none; transform:translateY(-58%)">
+        <span style="font-family:'Anton'; font-size:clamp(56px,15vw,190px); line-height:.8; text-transform:uppercase; text-align:center; color:{{ envAccent }}; opacity:.28; white-space:nowrap; transition:color .7s ease">{{ activeWord }}</span>
+      </div>
+
+      <div ref="{{ stageRef }}" style="position:absolute; inset:0; touch-action:pan-y">
+        <sc-for list="{{ packs }}" as="p" hint-placeholder-count="4">
+          <button onClick="{{ p.select }}" aria-label="{{ p.name }}" style="position:absolute; left:50%; top:46%; appearance:none; background:transparent; border:0; padding:0; width:{{ p.w }}px; transform:{{ p.tf }}; opacity:{{ p.op }}; filter:{{ p.fx }}; z-index:{{ p.z }}; transition:transform .62s cubic-bezier(.28,1.3,.4,1), opacity .5s ease, filter .5s ease">
+            <img src="{{ p.img }}" alt="{{ p.alt }}" style="width:100%; height:auto; display:block" />
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="position:absolute; left:0; right:0; bottom:0; padding:clamp(14px,2.6vw,34px) clamp(14px,3.4vw,34px) clamp(18px,3vw,38px); display:flex; flex-wrap:wrap; align-items:flex-end; gap:16px 28px; pointer-events:none">
+        <div style="flex:1 1 min(100%,300px); display:flex; flex-direction:column; gap:10px; transform:{{ infoTf }}; transition:transform .5s cubic-bezier(.25,1.4,.45,1)">
+          <span style="font-size:11px; font-weight:800; letter-spacing:.28em; color:{{ envAccent }}; transition:color .7s ease">FLAVOUR {{ activeNum }} / 04</span>
+          <h2 style="margin:0; font-family:'Anton'; font-size:clamp(34px,7.4vw,68px); line-height:.9; text-transform:uppercase; color:#FFF3D6">{{ activeName }}</h2>
+          <p style="margin:0; max-width:30ch; font-size:clamp(15px,4vw,18px); font-weight:500; line-height:1.4; color:#FFF3D6">{{ activeDesc }}</p>
+          <a href="#buy" style="pointer-events:auto; align-self:flex-start; margin-top:6px; background:#FFC93D; color:#0F0D0A; border:2px solid #0F0D0A; box-shadow:4px 4px 0 #0F0D0A; padding:0 22px; min-height:52px; border-radius:10px; display:inline-flex; align-items:center; font-size:12px; font-weight:800; letter-spacing:.14em" style-hover="background:#FFF3D6">SHOP NOW</a>
+        </div>
+        <div style="flex:0 0 auto; display:flex; flex-direction:column; gap:12px; align-items:flex-end">
+          <div style="display:flex; gap:8px; pointer-events:auto">
+            <sc-for list="{{ packs }}" as="p" hint-placeholder-count="4">
+              <button onClick="{{ p.select }}" aria-label="Show {{ p.name }}" style="width:44px; height:44px; background:transparent; border:0; padding:0; display:flex; align-items:center; justify-content:center">
+                <span style="display:block; width:{{ p.dotW }}px; height:10px; border-radius:100px; border:2px solid #0F0D0A; background:{{ p.dotBg }}; transition:width .4s ease, background .4s ease"></span>
+              </button>
+            </sc-for>
+          </div>
+          <span style="font-size:10px; font-weight:700; letter-spacing:.2em; color:rgba(255,243,214,.75); text-align:right">{{ hintText }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="why" style="background:#FFF3D6; border-top:2px solid #0F0D0A; border-bottom:2px solid #0F0D0A">
+    <div style="max-width:1440px; margin:0 auto; padding:clamp(40px,7vw,96px) clamp(14px,3.4vw,34px)">
+      <div data-reveal style="font-size:11px; font-weight:800; letter-spacing:.28em; color:#8A5A20; margin-bottom:clamp(16px,3vw,30px)">WHY WE'RE A HIT</div>
+      <div style="display:flex; flex-direction:column">
+        <div data-reveal style="border-top:2px solid #0F0D0A; padding:clamp(12px,2.2vw,22px) 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 22px">
+          <span style="font-size:11px; font-weight:800; color:#8A5A20; flex:0 0 30px">01</span>
+          <h3 style="margin:0; flex:1 1 240px; font-family:'Anton'; font-size:clamp(30px,8vw,78px); line-height:.9; text-transform:uppercase">10g natural protein</h3>
+          <p style="margin:0; flex:1 1 200px; max-width:32ch; font-size:14px; line-height:1.5; color:#3A2A14">Pea and soya isolates. Clean plant protein, no animal products.</p>
+        </div>
+        <div data-reveal style="border-top:2px solid #0F0D0A; padding:clamp(12px,2.2vw,22px) 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 22px">
+          <span style="font-size:11px; font-weight:800; color:#8A5A20; flex:0 0 30px">02</span>
+          <h3 style="margin:0; flex:1 1 240px; font-family:'Anton'; font-size:clamp(30px,8vw,78px); line-height:.9; text-transform:uppercase">High fibre</h3>
+          <p style="margin:0; flex:1 1 200px; max-width:32ch; font-size:14px; line-height:1.5; color:#3A2A14">Popcorn is a whole grain, so the fibre comes with the crunch.</p>
+        </div>
+        <div data-reveal style="border-top:2px solid #0F0D0A; padding:clamp(12px,2.2vw,22px) 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 22px">
+          <span style="font-size:11px; font-weight:800; color:#8A5A20; flex:0 0 30px">03</span>
+          <h3 style="margin:0; flex:1 1 240px; font-family:'Anton'; font-size:clamp(30px,8vw,78px); line-height:.9; text-transform:uppercase">Gluten free &amp; non-GMO</h3>
+          <p style="margin:0; flex:1 1 200px; max-width:32ch; font-size:14px; line-height:1.5; color:#3A2A14">No wheat fillers in the seasoning, no shortcuts in the kernel.</p>
+        </div>
+        <div data-reveal style="border-top:2px solid #0F0D0A; padding:clamp(12px,2.2vw,22px) 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 22px">
+          <span style="font-size:11px; font-weight:800; color:#8A5A20; flex:0 0 30px">04</span>
+          <h3 style="margin:0; flex:1 1 240px; font-family:'Anton'; font-size:clamp(30px,8vw,78px); line-height:.9; text-transform:uppercase; color:#F26F21; -webkit-text-stroke:2px #0F0D0A">Made in olive oil</h3>
+          <p style="margin:0; flex:1 1 200px; max-width:32ch; font-size:14px; line-height:1.5; color:#3A2A14">Never palm oil. It costs us more. It tastes a lot better.</p>
+        </div>
+        <div data-reveal style="border-top:2px solid #0F0D0A; border-bottom:2px solid #0F0D0A; padding:clamp(12px,2.2vw,22px) 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 22px">
+          <span style="font-size:11px; font-weight:800; color:#8A5A20; flex:0 0 30px">05</span>
+          <h3 style="margin:0; flex:1 1 240px; font-family:'Anton'; font-size:clamp(30px,8vw,78px); line-height:.9; text-transform:uppercase">Extremely delicious</h3>
+          <p style="margin:0; flex:1 1 200px; max-width:32ch; font-size:14px; line-height:1.5; color:#3A2A14">The part most protein snacks forget about entirely.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="story" style="background:#F26F21; padding:clamp(34px,6vw,80px) clamp(14px,3.4vw,34px)">
+    <div style="max-width:1180px; margin:0 auto; display:flex; flex-wrap:wrap; border:2px solid #0F0D0A; box-shadow:8px 8px 0 #0F0D0A; background:#FFFFFF">
+      <div style="flex:1 1 min(100%,330px); min-width:0; padding:clamp(22px,3.4vw,44px); display:flex; flex-direction:column; gap:16px">
+        <h2 style="margin:0; font-family:'Anton'; font-size:clamp(30px,6.4vw,54px); line-height:.9; text-transform:uppercase">Not your regular popcorn.<br />This one has a mission.</h2>
+        <div style="display:flex; flex-direction:column; gap:12px; max-width:50ch; font-size:clamp(14px,3.6vw,16px); line-height:1.6; color:#3A2A14">
+          <p style="margin:0">Poptein® started with a simple thought: why does protein taste like punishment?</p>
+          <p style="margin:0">Somewhere along the way it became chalky shakes and snacks you eat just for the macros. We weren't into that. Protein isn't a side quest, so it should taste like something you actually crave.</p>
+          <p style="margin:0">Now popping across 110+ stores, HORECA and fitness centres, Poptein shows up in gym bags, movie nights and everyday cravings.</p>
+        </div>
+        <a href="#buy" style="align-self:flex-start; background:#FFC93D; border:2px solid #0F0D0A; box-shadow:3px 3px 0 #0F0D0A; padding:0 20px; min-height:48px; border-radius:8px; display:inline-flex; align-items:center; font-size:12px; font-weight:800; letter-spacing:.12em" style-hover="background:#F26F21">OUR STORY</a>
+      </div>
+      <div style="flex:1 1 min(100%,320px); min-width:0; overflow:hidden; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-left:2px solid #0F0D0A">
+        <div style="aspect-ratio:1; min-width:0; overflow:hidden; background:repeating-linear-gradient(45deg,#EFE3CC 0 9px,#E6D7BB 9px 18px); border-bottom:2px solid #0F0D0A; border-right:2px solid #0F0D0A; display:flex; align-items:flex-end; padding:12px"><span style="font-family:ui-monospace,Menlo,monospace; font-size:10px; color:#6B5836; overflow-wrap:anywhere">kids · street shot</span></div>
+        <div style="aspect-ratio:1; min-width:0; overflow:hidden; background:repeating-linear-gradient(45deg,#EFE3CC 0 9px,#E6D7BB 9px 18px); border-bottom:2px solid #0F0D0A; display:flex; align-items:flex-end; padding:12px"><span style="font-family:ui-monospace,Menlo,monospace; font-size:10px; color:#6B5836; overflow-wrap:anywhere">festival portrait</span></div>
+        <div style="aspect-ratio:1; min-width:0; overflow:hidden; background:repeating-linear-gradient(45deg,#EFE3CC 0 9px,#E6D7BB 9px 18px); border-right:2px solid #0F0D0A; display:flex; align-items:flex-end; padding:12px"><span style="font-family:ui-monospace,Menlo,monospace; font-size:10px; color:#6B5836; overflow-wrap:anywhere">movie night</span></div>
+        <div style="aspect-ratio:1; min-width:0; overflow:hidden; background:repeating-linear-gradient(45deg,#EFE3CC 0 9px,#E6D7BB 9px 18px); display:flex; align-items:flex-end; padding:12px"><span style="font-family:ui-monospace,Menlo,monospace; font-size:10px; color:#6B5836; overflow-wrap:anywhere">gym / athlete</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#0F0D0A; color:#FFF3D6; border-top:2px solid #0F0D0A">
+    <div style="max-width:1440px; margin:0 auto; padding:clamp(40px,7vw,96px) clamp(14px,3.4vw,34px); display:flex; flex-direction:column; gap:clamp(22px,4vw,44px)">
+      <div data-reveal style="display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; justify-content:space-between">
+        <h2 style="margin:0; font-family:'Anton'; font-size:clamp(30px,7vw,64px); line-height:.9; text-transform:uppercase">Four ingredients.<br />That's the whole list.</h2>
+        <span style="font-size:11px; font-weight:800; letter-spacing:.24em; color:#FFC93D">NO PRESERVATIVES</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr)); gap:2px; background:rgba(255,243,214,.28)">
+        <div data-reveal style="background:#0F0D0A; padding:clamp(16px,2.6vw,26px); display:flex; flex-direction:column; gap:10px">
+          <span style="font-size:10px; font-weight:800; letter-spacing:.22em; color:#FFC93D">01 / BASE</span>
+          <h3 style="margin:0; font-family:'Anton'; font-size:clamp(22px,4.4vw,32px); line-height:1; text-transform:uppercase">Popcorn</h3>
+          <p style="margin:0; font-size:13px; line-height:1.55; color:rgba(255,243,214,.72)">Extra jumbo imported kernels. Bigger pop, better crunch.</p>
+        </div>
+        <div data-reveal style="background:#0F0D0A; padding:clamp(16px,2.6vw,26px); display:flex; flex-direction:column; gap:10px">
+          <span style="font-size:10px; font-weight:800; letter-spacing:.22em; color:#FFC93D">02 / PROTEIN</span>
+          <h3 style="margin:0; font-family:'Anton'; font-size:clamp(22px,4.4vw,32px); line-height:1; text-transform:uppercase">Plant protein</h3>
+          <p style="margin:0; font-size:13px; line-height:1.55; color:rgba(255,243,214,.72)">Pea and soya isolates, the clean stuff serious nutrition brands use.</p>
+        </div>
+        <div data-reveal style="background:#0F0D0A; padding:clamp(16px,2.6vw,26px); display:flex; flex-direction:column; gap:10px">
+          <span style="font-size:10px; font-weight:800; letter-spacing:.22em; color:#FFC93D">03 / FAT</span>
+          <h3 style="margin:0; font-family:'Anton'; font-size:clamp(22px,4.4vw,32px); line-height:1; text-transform:uppercase">Olive oil</h3>
+          <p style="margin:0; font-size:13px; line-height:1.55; color:rgba(255,243,214,.72)">Popped in olive oil instead of palm, every single batch.</p>
+        </div>
+        <div data-reveal style="background:#0F0D0A; padding:clamp(16px,2.6vw,26px); display:flex; flex-direction:column; gap:10px">
+          <span style="font-size:10px; font-weight:800; letter-spacing:.22em; color:#FFC93D">04 / FLAVOUR</span>
+          <h3 style="margin:0; font-family:'Anton'; font-size:clamp(22px,4.4vw,32px); line-height:1; text-transform:uppercase">Seasoning</h3>
+          <p style="margin:0; font-size:13px; line-height:1.55; color:rgba(255,243,214,.72)">Sweet, savoury or spicy. Nothing that needs a chemistry degree.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#FFC93D; border-top:2px solid #0F0D0A; border-bottom:2px solid #0F0D0A">
+    <div style="max-width:1440px; margin:0 auto; padding:clamp(38px,6vw,88px) clamp(14px,3.4vw,34px); display:flex; flex-wrap:wrap; gap:clamp(20px,4vw,52px); align-items:center">
+      <div style="flex:1 1 min(100%,300px); min-width:0">
+        <div style="font-size:11px; font-weight:800; letter-spacing:.26em; margin-bottom:14px">POPPIN' LOVE</div>
+        <blockquote style="margin:0; font-family:'Anton'; font-size:clamp(28px,6.6vw,58px); line-height:.95; text-transform:uppercase; text-wrap:pretty">“Your Peanut Butter is BOMB! I already bought two and ate!”</blockquote>
+        <div style="margin-top:16px; font-size:13px; font-weight:700">Shruti Kulkarni<span style="color:#5A4308; font-weight:500"> · Trainer at Physique57</span></div>
+      </div>
+      <div style="flex:0 1 min(100%,280px); display:flex; flex-direction:column; gap:12px">
+        <p style="margin:0; font-size:14px; line-height:1.55">Tried it? Tell everyone. Reviews are how a small brand gets onto the next shelf.</p>
+        <a href="https://www.trustpilot.com/review/poptein.in" target="_blank" rel="noopener" style="align-self:flex-start; background:#0F0D0A; color:#FFC93D; border:2px solid #0F0D0A; box-shadow:4px 4px 0 #FFF3D6; padding:0 22px; min-height:50px; border-radius:10px; display:inline-flex; align-items:center; font-size:12px; font-weight:800; letter-spacing:.14em" style-hover="background:#FFF3D6; color:#0F0D0A">REVIEW US</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#F26F21; overflow:hidden">
+    <div style="max-width:1440px; margin:0 auto; padding:clamp(34px,6vw,84px) clamp(14px,3.4vw,34px) clamp(40px,6vw,88px)">
+      <div data-reveal style="display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; justify-content:space-between; margin-bottom:clamp(18px,3vw,32px)">
+        <h2 style="margin:0; font-family:'Anton'; font-size:clamp(32px,8vw,76px); line-height:.88; text-transform:uppercase">What's poppin'</h2>
+        <a href="https://www.instagram.com/poptein.india/" target="_blank" rel="noopener" style="font-size:12px; font-weight:800; letter-spacing:.16em; border-bottom:3px solid #0F0D0A; padding-bottom:3px">@POPTEIN.INDIA</a>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr)); gap:clamp(10px,1.6vw,18px); align-items:start">
+        <div style="background:#FFF3D6; border:2px solid #0F0D0A; aspect-ratio:3/4; display:flex; align-items:center; justify-content:center; overflow:hidden; transform:rotate(-2deg)"><img src="uploads/Spicy-kimchi-Cheese.avif" alt="Spicy Kimchi Cheese pack" style="height:88%; width:auto" /></div>
+        <div style="background:repeating-linear-gradient(45deg,#E85C12 0 9px,#DA5410 9px 18px); border:2px solid #0F0D0A; aspect-ratio:3/4; display:flex; align-items:flex-end; padding:12px; margin-top:clamp(0px,3vw,34px)"><span style="font-family:ui-monospace,Menlo,monospace; font-size:10px; color:#FFF3D6">herb n zing · kitchen table</span></div>
+        <div style="background:#0F0D0A; color:#FFF3D6; border:2px solid #0F0D0A; aspect-ratio:3/4; padding:clamp(14px,2vw,20px); display:flex; align-items:flex-end; transform:rotate(1.5deg)"><span style="font-family:'Anton'; font-size:clamp(22px,3.2vw,34px); line-height:.95; text-transform:uppercase">Pop your protein game</span></div>
+        <div style="background:repeating-linear-gradient(45deg,#E85C12 0 9px,#DA5410 9px 18px); border:2px solid #0F0D0A; aspect-ratio:3/4; display:flex; align-items:flex-end; padding:12px; margin-top:clamp(0px,2vw,22px)"><span style="font-family:ui-monospace,Menlo,monospace; font-size:10px; color:#FFF3D6">brownie · chocolate pour</span></div>
+        <div style="background:#FFF3D6; border:2px solid #0F0D0A; aspect-ratio:3/4; display:flex; align-items:center; justify-content:center; overflow:hidden; transform:rotate(2deg)"><img src="uploads/Brownie.avif" alt="Brownie pack" style="height:88%; width:auto" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="buy" style="background:#FFF3D6; border-top:2px solid #0F0D0A; border-bottom:2px solid #0F0D0A">
+    <div style="max-width:1440px; margin:0 auto; padding:clamp(40px,7vw,96px) clamp(14px,3.4vw,34px); display:flex; flex-direction:column; gap:clamp(18px,3vw,34px)">
+      <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; justify-content:space-between">
+        <h2 style="margin:0; font-family:'Anton'; font-size:clamp(34px,8.4vw,84px); line-height:.88; text-transform:uppercase">Where to buy</h2>
+        <span style="font-size:11px; font-weight:800; letter-spacing:.24em; color:#8A5A20">SAME DAY IN BENGALURU</span>
+      </div>
+      <div style="display:flex; flex-direction:column">
+        <a href="https://www.amazon.in/s?k=POPTEIN&amp;ref=bl_dp_s_web_0" target="_blank" rel="noopener" style="border-top:2px solid #0F0D0A; padding:clamp(14px,2.4vw,24px) 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 20px" style-hover="background:#FFC93D">
+          <span style="font-family:'Anton'; font-size:clamp(28px,6.4vw,58px); line-height:1; text-transform:uppercase; flex:1 1 200px">Amazon</span>
+          <span style="font-size:13px; line-height:1.4; color:#3A2A14; flex:1 1 180px; max-width:30ch">All four flavours, delivered anywhere in India.</span>
+          <span style="font-family:'Anton'; font-size:clamp(22px,4vw,34px)">→</span>
+        </a>
+        <a href="https://blinkit.com/s/?q=poptein" target="_blank" rel="noopener" style="border-top:2px solid #0F0D0A; padding:clamp(14px,2.4vw,24px) 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 20px" style-hover="background:#FFC93D">
+          <span style="font-family:'Anton'; font-size:clamp(28px,6.4vw,58px); line-height:1; text-transform:uppercase; flex:1 1 200px">Blinkit</span>
+          <span style="font-size:13px; line-height:1.4; color:#3A2A14; flex:1 1 180px; max-width:30ch">Bengaluru and Hyderabad, poppin' in minutes.</span>
+          <span style="font-family:'Anton'; font-size:clamp(22px,4vw,34px)">→</span>
+        </a>
+        <a href="https://instamart.in/search?custom_back=true&amp;query=Poptein+popcorn" target="_blank" rel="noopener" style="border-top:2px solid #0F0D0A; padding:clamp(14px,2.4vw,24px) 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 20px" style-hover="background:#FFC93D">
+          <span style="font-family:'Anton'; font-size:clamp(28px,6.4vw,58px); line-height:1; text-transform:uppercase; flex:1 1 200px">Instamart</span>
+          <span style="font-size:13px; line-height:1.4; color:#3A2A14; flex:1 1 180px; max-width:30ch">Quick commerce across Bengaluru, same day.</span>
+          <span style="font-family:'Anton'; font-size:clamp(22px,4vw,34px)">→</span>
+        </a>
+        <a href="https://wa.me/message/I6T2ZF32KVWOD1" target="_blank" rel="noopener" style="border-top:2px solid #0F0D0A; border-bottom:2px solid #0F0D0A; padding:clamp(14px,2.4vw,24px) 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 20px" style-hover="background:#FFC93D">
+          <span style="font-family:'Anton'; font-size:clamp(28px,6.4vw,58px); line-height:1; text-transform:uppercase; flex:1 1 200px; color:#F26F21; -webkit-text-stroke:2px #0F0D0A">WhatsApp</span>
+          <span style="font-size:13px; line-height:1.4; color:#3A2A14; flex:1 1 180px; max-width:30ch">Order straight from us. Home delivery, same day.</span>
+          <span style="font-family:'Anton'; font-size:clamp(22px,4vw,34px)">→</span>
+        </a>
+      </div>
+      <p style="margin:0; font-size:13px; line-height:1.6; color:#3A2A14; max-width:60ch">Also on shelves at 110+ retail stores, cafés and fitness centres across Bengaluru, with more cities being added as we expand.</p>
+    </div>
+  </section>
+
+  <section id="faq" style="background:#F26F21; padding:clamp(38px,6vw,88px) clamp(14px,3.4vw,34px)">
+    <div style="max-width:1000px; margin:0 auto">
+      <h2 data-reveal style="margin:0 0 clamp(16px,3vw,30px); font-family:'Anton'; font-size:clamp(32px,8vw,72px); line-height:.88; text-transform:uppercase">Straight answers</h2>
+      <div style="display:flex; flex-direction:column">
+        <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="5">
+          <div style="border-top:2px solid #0F0D0A">
+            <button onClick="{{ q.toggle }}" style="appearance:none; background:transparent; border:0; width:100%; text-align:left; padding:18px 0; min-height:60px; display:flex; gap:16px; align-items:center; justify-content:space-between">
+              <span style="font-size:clamp(16px,4.2vw,21px); font-weight:700; line-height:1.3">{{ q.q }}</span>
+              <span style="font-family:'Anton'; font-size:26px; flex:0 0 auto; transform:{{ q.rot }}; transition:transform .3s cubic-bezier(.3,1.4,.5,1)">+</span>
+            </button>
+            <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:0; padding:0 0 22px; max-width:60ch; font-size:14px; line-height:1.6; color:#2C1E0C">{{ q.a }}</p>
+            </sc-if>
+          </div>
+        </sc-for>
+        <div style="border-top:2px solid #0F0D0A"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer style="background:#0F0D0A; color:#FFF3D6">
+  <div style="overflow:hidden; white-space:nowrap; border-bottom:1px solid rgba(255,243,214,.25); padding:10px 0">
+    <div style="display:inline-flex; animation:marqr 30s linear infinite; font-family:'Anton'; font-size:clamp(18px,3.6vw,26px); color:#FFC93D">
+      <span>PEANUT BUTTER&nbsp;&nbsp;·&nbsp;&nbsp;BROWNIE&nbsp;&nbsp;·&nbsp;&nbsp;SPICY KIMCHI CHEESE&nbsp;&nbsp;·&nbsp;&nbsp;HERB N ZING&nbsp;&nbsp;·&nbsp;&nbsp;PEANUT BUTTER&nbsp;&nbsp;·&nbsp;&nbsp;BROWNIE&nbsp;&nbsp;·&nbsp;&nbsp;SPICY KIMCHI CHEESE&nbsp;&nbsp;·&nbsp;&nbsp;HERB N ZING&nbsp;&nbsp;·&nbsp;&nbsp;</span>
+      <span>PEANUT BUTTER&nbsp;&nbsp;·&nbsp;&nbsp;BROWNIE&nbsp;&nbsp;·&nbsp;&nbsp;SPICY KIMCHI CHEESE&nbsp;&nbsp;·&nbsp;&nbsp;HERB N ZING&nbsp;&nbsp;·&nbsp;&nbsp;PEANUT BUTTER&nbsp;&nbsp;·&nbsp;&nbsp;BROWNIE&nbsp;&nbsp;·&nbsp;&nbsp;SPICY KIMCHI CHEESE&nbsp;&nbsp;·&nbsp;&nbsp;HERB N ZING&nbsp;&nbsp;·&nbsp;&nbsp;</span>
+    </div>
+  </div>
+  <div style="max-width:1440px; margin:0 auto; padding:clamp(30px,5vw,64px) clamp(14px,3.4vw,34px) 24px; display:flex; flex-wrap:wrap; gap:clamp(22px,4vw,52px); justify-content:space-between">
+    <div style="flex:1 1 min(100%,260px); display:flex; flex-direction:column; gap:14px">
+      <img src="uploads/Poptein-Logo.avif" alt="Poptein" style="width:150px" />
+      <p style="margin:0; max-width:30ch; font-size:13px; line-height:1.6; color:rgba(255,243,214,.72)">India's first protein popcorn. Made in Bengaluru, eaten everywhere.</p>
+    </div>
+    <div style="flex:0 1 auto; display:flex; flex-direction:column; gap:10px">
+      <span style="font-size:10px; font-weight:800; letter-spacing:.24em; color:#FFC93D">SHOP</span>
+      <a href="#orbit" style="font-size:14px; color:#FFF3D6" style-hover="color:#FFC93D">Flavours</a>
+      <a href="#buy" style="font-size:14px; color:#FFF3D6" style-hover="color:#FFC93D">Where to buy</a>
+      <a href="https://wa.me/message/I6T2ZF32KVWOD1" target="_blank" rel="noopener" style="font-size:14px; color:#FFF3D6" style-hover="color:#FFC93D">WhatsApp order</a>
+    </div>
+    <div style="flex:0 1 auto; display:flex; flex-direction:column; gap:10px">
+      <span style="font-size:10px; font-weight:800; letter-spacing:.24em; color:#FFC93D">BRAND</span>
+      <a href="#story" style="font-size:14px; color:#FFF3D6" style-hover="color:#FFC93D">Our story</a>
+      <a href="#why" style="font-size:14px; color:#FFF3D6" style-hover="color:#FFC93D">Why Poptein</a>
+      <a href="#faq" style="font-size:14px; color:#FFF3D6" style-hover="color:#FFC93D">FAQ</a>
+    </div>
+    <div style="flex:0 1 auto; display:flex; flex-direction:column; gap:10px">
+      <span style="font-size:10px; font-weight:800; letter-spacing:.24em; color:#FFC93D">FOLLOW</span>
+      <a href="https://www.instagram.com/poptein.india/" target="_blank" rel="noopener" style="font-size:14px; color:#FFF3D6" style-hover="color:#FFC93D">Instagram</a>
+      <a href="https://www.trustpilot.com/review/poptein.in" target="_blank" rel="noopener" style="font-size:14px; color:#FFF3D6" style-hover="color:#FFC93D">Trustpilot</a>
+    </div>
+  </div>
+  <div style="max-width:1440px; margin:0 auto; padding:0 clamp(14px,3.4vw,34px) 30px; font-size:11px; letter-spacing:.1em; color:rgba(255,243,214,.5)">© 2026 POPTEIN® · BENGALURU, INDIA</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showLoader&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;revealOnScroll&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Experience&quot;}}">
+class Component extends DCLogic {
+  state = {
+    stage: 0, loaderOn: true, loaderOpacity: 1,
+    angle: 0, active: 0, popping: false,
+    isMobile: false, menuOpen: false, openFaq: 0, w: 1200
+  };
+
+  DATA = [
+    { name:'PEANUT BUTTER', short:'PEANUT BUTTER', img:'uploads/PEANUT-BUTTER.avif',
+      desc:'Sweet, salty, nutty and crowd favourite.',
+      bg:'#D98F2B', deep:'#6B3A0C', accent:'#FFE3A8' },
+    { name:'BROWNIE', short:'BROWNIE', img:'uploads/Brownie.avif',
+      desc:'Rich & chocolatey without the guilt.',
+      bg:'#6A4AA0', deep:'#2A1745', accent:'#F5CE5C' },
+    { name:'SPICY KIMCHI CHEESE', short:'KIMCHI CHEESE', img:'uploads/Spicy-kimchi-Cheese.avif',
+      desc:'Bold, fiery, cheesy and extremely addictive.',
+      bg:'#CE3118', deep:'#4E0F06', accent:'#FFC93D' },
+    { name:'HERB N ZING', short:'HERB N ZING', img:'uploads/HERB-n-ZING.avif',
+      desc:'Zesty, herby, and packed with a punch.',
+      bg:'#4B9433', deep:'#173B10', accent:'#E6F25A' }
+  ];
+
+  FAQ = [
+    { q:'How much protein is in a pack?', a:'10g of plant protein per serve, from pea and soya isolates. A 50g pack is one serve.' },
+    { q:'Is it actually vegan?', a:'Yes. No animal products anywhere in the four flavours, including the seasonings.' },
+    { q:'Why olive oil instead of palm oil?', a:'Palm oil is cheaper and flatter in taste. Olive oil pops cleaner and carries the seasoning better, so we pay the difference.' },
+    { q:'Where can I buy it?', a:'Amazon ships across India. Blinkit and Instamart deliver in minutes in Bengaluru and Hyderabad, and you can order directly on WhatsApp. Or find us in 110+ stores and gyms.' },
+    { q:'Does it taste like protein powder?', a:'No. That was the whole point. There is no chalky aftertaste — it tastes like well-seasoned popcorn.' }
+  ];
+
+  componentDidMount() {
+    this.measure();
+    this._onResize = () => this.measure();
+    window.addEventListener('resize', this._onResize);
+
+    if (this.props.showLoader === false) {
+      this.setState({ loaderOn:false, stage:4 });
+    } else {
+      this._t = [
+        setTimeout(() => this.setState({ stage:1 }), 780),
+        setTimeout(() => this.setState({ stage:2 }), 1260),
+        setTimeout(() => this.setState({ loaderOpacity:0 }), 2120),
+        setTimeout(() => this.setState({ loaderOn:false }), 2560)
+      ];
+    }
+
+    this._onScroll = () => {
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(() => { this._raf = null; this.readScroll(); });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive:true });
+    document.addEventListener('scroll', this._onScroll, { passive:true, capture:true });
+    this.readScroll();
+
+    const st = this._stage;
+    if (st) {
+      let last = null;
+      this._ts = e => { last = e.touches[0].clientX; };
+      this._tm = e => {
+        if (last === null) return;
+        const x = e.touches[0].clientX, dx = last - x;
+        if (Math.abs(dx) < 1) return;
+        last = x;
+        e.preventDefault();
+        this.scroller().scrollTop += dx * 2.4;
+      };
+      this._te = () => { last = null; };
+      st.addEventListener('touchstart', this._ts, { passive:true });
+      st.addEventListener('touchmove', this._tm, { passive:false });
+      st.addEventListener('touchend', this._te, { passive:true });
+    }
+
+    if (this.props.revealOnScroll !== false && 'IntersectionObserver' in window) {
+      const els = Array.from(document.querySelectorAll('[data-reveal]'));
+      els.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(22px)';
+        el.style.transition = 'opacity .6s ease, transform .7s cubic-bezier(.2,.9,.3,1)';
+      });
+      const io = new IntersectionObserver(es => {
+        es.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.style.opacity = '1';
+            e.target.style.transform = 'none';
+            io.unobserve(e.target);
+          }
+        });
+      }, { rootMargin:'0px 0px -12% 0px' });
+      els.forEach(el => io.observe(el));
+      this._io = io;
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('scroll', this._onScroll);
+    document.removeEventListener('scroll', this._onScroll, true);
+    (this._t || []).forEach(clearTimeout);
+    clearTimeout(this._pop);
+    if (this._io) this._io.disconnect();
+    const st = this._stage;
+    if (st && this._ts) {
+      st.removeEventListener('touchstart', this._ts);
+      st.removeEventListener('touchmove', this._tm);
+      st.removeEventListener('touchend', this._te);
+    }
+  }
+
+  measure() {
+    const w = window.innerWidth;
+    this.setState({ w, isMobile: w < 860 });
+  }
+
+  readScroll() {
+    const el = this._orbit;
+    if (!el) return;
+    const total = el.offsetHeight - window.innerHeight;
+    if (total <= 0) return;
+    const p = Math.min(1, Math.max(0, -el.getBoundingClientRect().top / total));
+    const angle = p * (this.DATA.length - 1) * 90;
+    const active = Math.round(angle / 90) % this.DATA.length;
+    const changed = active !== this.state.active;
+    this.setState({ angle: Math.round(angle * 2) / 2, active });
+    if (changed) {
+      clearTimeout(this._pop);
+      this.setState({ popping:true });
+      this._pop = setTimeout(() => this.setState({ popping:false }), 460);
+    }
+  }
+
+  scroller() {
+    const de = document.scrollingElement;
+    if (de && de.scrollHeight > de.clientHeight + 1) return de;
+    return document.body;
+  }
+
+  goTo(i) {
+    const el = this._orbit;
+    if (!el) return;
+    const sc = this.scroller();
+    const total = el.offsetHeight - window.innerHeight;
+    const top = sc.scrollTop + el.getBoundingClientRect().top + (i / (this.DATA.length - 1)) * total;
+    if (sc.scrollTo) sc.scrollTo({ top, behavior:'smooth' });
+    else sc.scrollTop = top;
+  }
+
+  renderVals() {
+    const s = this.state, D = this.DATA, n = D.length;
+    const act = D[s.active] || D[0];
+    const mob = s.isMobile;
+    const R = mob ? Math.min(s.w * 0.46, 230) : Math.min(s.w * 0.24, 340);
+    const baseW = mob ? Math.min(s.w * 0.56, 250) : Math.min(s.w * 0.24, 320);
+    const lat = [-18, 22, -8, 30];
+
+    const packs = D.map((d, i) => {
+      const a = (i * 90 - s.angle) * Math.PI / 180;
+      const t = (Math.cos(a) + 1) / 2;              // 0 = back, 1 = front
+      const front = i === s.active;
+      const scale = (0.52 + 0.58 * t * t) * (front && s.popping ? 1.07 : 1);
+      const x = Math.sin(a) * R;
+      const y = -Math.cos(a) * 16 + lat[i] * (0.4 + 0.6 * (1 - t)) - t * 26;
+      return {
+        name: d.name, alt: 'Poptein ' + d.name + ' protein popcorn pack', img: d.img,
+        w: Math.round(baseW),
+        tf: 'translate(-50%,-50%) translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + scale.toFixed(3) + ') rotate(' + (Math.sin(a) * 9).toFixed(1) + 'deg)',
+        op: (0.3 + 0.7 * t).toFixed(2),
+        fx: 'blur(' + ((1 - t) * (mob ? 3 : 4.5)).toFixed(1) + 'px) drop-shadow(0 ' + (10 + 26 * t).toFixed(0) + 'px ' + (14 + 22 * t).toFixed(0) + 'px rgba(0,0,0,' + (0.18 + 0.28 * t).toFixed(2) + '))',
+        z: Math.round(t * 100),
+        dotW: front ? 34 : 10,
+        dotBg: front ? '#FFF3D6' : 'rgba(255,243,214,.35)',
+        select: () => this.goTo(i)
+      };
+    });
+
+    return {
+      loaderOn: s.loaderOn, loaderOpacity: s.loaderOpacity,
+      showKernel: s.stage === 0, showBurst: s.stage === 1,
+      showCorn: s.stage >= 1, showLogo: s.stage >= 2,
+      frags: s.stage >= 1
+        ? [1,2,3,4,5,6].map(k => ({ kf:'kf' + k, size: mob ? 10 : 8 + (k % 3) * 5 }))
+        : [],
+
+      isMobile: mob, isDesktop: !mob, menuOpen: s.menuOpen,
+      toggleMenu: () => this.setState(p => ({ menuOpen: !p.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen:false }),
+
+      packs,
+      envBg: act.bg, envDeep: act.deep, envAccent: act.accent,
+      activeName: act.name, activeDesc: act.desc, activeWord: act.short,
+      activeNum: '0' + (s.active + 1),
+      infoTf: s.popping ? 'translateY(-6px)' : 'translateY(0)',
+      hintText: mob ? 'SWIPE OR TAP A PACK' : 'SCROLL TO ROTATE · CLICK A PACK',
+
+      faqs: this.FAQ.map((f, i) => ({
+        q: f.q, a: f.a, open: s.openFaq === i,
+        rot: s.openFaq === i ? 'rotate(135deg)' : 'rotate(0deg)',
+        toggle: () => this.setState(p => ({ openFaq: p.openFaq === i ? -1 : i }))
+      })),
+
+      orbitRef: el => { this._orbit = el; },
+      stageRef: el => { this._stage = el; }
+    };
+  }
+}
+</script>
+</body>
+</html>

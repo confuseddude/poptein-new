@@ -1,0 +1,111 @@
+/* ==========================================================================
+   Masthead
+   ========================================================================== */
+
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  background: var(--orange);
+  border-bottom: var(--rule);
+  transition: background-color .3s var(--ease-out), box-shadow .3s var(--ease-out);
+}
+/* once past the hero the bar earns a little weight */
+.masthead.is-stuck { box-shadow: 0 6px 0 rgba(15, 13, 10, .12); }
+
+.masthead__bar {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding: 10px var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 26px);
+}
+
+.masthead__logo { flex: 0 0 auto; }
+.masthead__logo img { width: clamp(102px, 11vw, 138px); }
+
+.masthead__nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.2vw, 32px);
+  margin-left: auto;
+}
+.masthead__nav a {
+  position: relative;
+  padding: 6px 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.masthead__nav a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .28s var(--ease-out);
+}
+@media (hover: hover) {
+  .masthead__nav a:hover::after { transform: scaleX(1); }
+}
+.masthead__nav a[aria-current="true"]::after { transform: scaleX(1); }
+
+.masthead__cta {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding-inline: 18px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 var(--ink);
+  font-size: 12px;
+}
+
+/* --- burger --------------------------------------------------------------- */
+.masthead__burger {
+  display: none;
+  flex: 0 0 auto;
+  width: 46px; height: 46px;
+  border: var(--rule);
+  border-radius: 8px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.masthead__burger span {
+  display: block;
+  width: 17px; height: 2px;
+  background: var(--ink);
+  transition: transform .28s var(--ease-out);
+}
+.masthead__burger[aria-expanded="true"] span:first-child { transform: translateY(3.5px) rotate(45deg); }
+.masthead__burger[aria-expanded="true"] span:last-child  { transform: translateY(-3.5px) rotate(-45deg); }
+
+/* --- mobile menu ---------------------------------------------------------- */
+.masthead__menu {
+  border-top: var(--rule);
+  padding: 4px var(--gutter) 20px;
+}
+.masthead__menu nav { display: flex; flex-direction: column; }
+.masthead__menu a {
+  padding: 15px 0;
+  font-family: Anton, Impact, sans-serif;
+  font-size: clamp(26px, 8vw, 34px);
+  text-transform: uppercase;
+  line-height: 1;
+  border-bottom: 1px solid rgba(15, 13, 10, .24);
+}
+.masthead__menu a:last-child { border-bottom: 0; }
+
+@media (max-width: 900px) {
+  .masthead__nav { display: none; }
+  .masthead__burger { display: flex; }
+  .masthead__cta { margin-left: auto; }
+}
+@media (max-width: 380px) {
+  /* keep the bar from crowding: the menu still carries "Where to buy" */
+  .masthead__cta { padding-inline: 14px; letter-spacing: .06em; }
+}
