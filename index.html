@@ -6,6 +6,8 @@
 <title>Poptein — India's first protein popcorn</title>
 <meta name="description" content="Poptein is India's first protein popcorn. Popped in olive oil, 10g of plant protein a serve, four flavours, and no chalky aftertaste. Now in 110+ stores." />
 <meta name="theme-color" content="#F26F21" />
+<link rel="icon" type="image/webp" href="/img/pops/pop-peanut-butter-200.webp" />
+<link rel="apple-touch-icon" href="/img/pops/pop-peanut-butter-200.webp" />
 <link rel="canonical" href="https://poptein.in/" />
 
 <meta property="og:type" content="website" />
@@ -120,23 +122,29 @@
     </h1>
 
     <div class="hero__product">
-      <picture class="hero__pack">
-        <source type="image/avif"
-                srcset="/img/packs/pack-peanut-butter-340.avif 340w, /img/packs/pack-peanut-butter-500.avif 500w"
-                sizes="(max-width: 760px) 62vw, 34vw" />
-        <img src="/img/packs/pack-peanut-butter-500.webp"
-             srcset="/img/packs/pack-peanut-butter-340.webp 340w, /img/packs/pack-peanut-butter-500.webp 500w"
-             sizes="(max-width: 760px) 62vw, 34vw"
-             alt="Poptein Peanut Butter protein popcorn pack, 10g protein per serve"
-             width="500" height="696" fetchpriority="high" decoding="sync" />
-      </picture>
+      <button class="hero__pack" id="hero-pack-btn" type="button" aria-label="Switch flavour (currently Peanut Butter). Click to see next flavour" title="Click to switch flavour">
+        <picture>
+          <source id="hero-pack-source" type="image/avif"
+                  srcset="/img/packs/pack-peanut-butter-340.avif 340w, /img/packs/pack-peanut-butter-500.avif 500w"
+                  sizes="(max-width: 760px) 62vw, 34vw" />
+          <img id="hero-pack-img" src="/img/packs/pack-peanut-butter-500.webp"
+               srcset="/img/packs/pack-peanut-butter-340.webp 340w, /img/packs/pack-peanut-butter-500.webp 500w"
+               sizes="(max-width: 760px) 62vw, 34vw"
+               alt="Poptein Peanut Butter protein popcorn pack, 10g protein per serve"
+               width="500" height="696" fetchpriority="high" decoding="sync" />
+        </picture>
+        <span class="hero__pack-hint" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span id="hero-pack-flavour-name">Peanut Butter</span>
+        </span>
+      </button>
 
       <span class="hero__badge hero__badge--a">10g protein</span>
       <span class="hero__badge hero__badge--b">No palm oil</span>
 
       <picture class="hero__crumb hero__crumb--a" aria-hidden="true" data-drift="0.06">
-        <source type="image/avif" srcset="/img/pops/pop-peanut-butter-200.avif" />
-        <img src="/img/pops/pop-peanut-butter-200.webp" alt="" width="200" height="300" loading="lazy" />
+        <source id="hero-crumb-a-source" type="image/avif" srcset="/img/pops/pop-peanut-butter-200.avif" />
+        <img id="hero-crumb-a-img" src="/img/pops/pop-peanut-butter-200.webp" alt="" width="200" height="300" loading="lazy" />
       </picture>
       <picture class="hero__crumb hero__crumb--b" aria-hidden="true" data-drift="-0.1">
         <source type="image/avif" srcset="/img/pops/pop-plain-200.avif" />
@@ -166,8 +174,14 @@
 <!-- ─────────────────────────── MARQUEE ─────────────────────────── -->
 <div class="marquee" aria-hidden="true">
   <div class="marquee__track">
-    <span>Pop your protein game <b>★</b> 110+ stores <b>★</b> Gluten free <b>★</b> Non&nbsp;GMO <b>★</b> Vegan <b>★</b> </span>
-    <span>Pop your protein game <b>★</b> 110+ stores <b>★</b> Gluten free <b>★</b> Non&nbsp;GMO <b>★</b> Vegan <b>★</b> </span>
+    <div class="marquee__group">
+      <span>Pop your protein game <b>★</b> 110+ stores <b>★</b> Gluten free <b>★</b> Non&nbsp;GMO <b>★</b> Vegan <b>★</b> </span>
+      <span>Pop your protein game <b>★</b> 110+ stores <b>★</b> Gluten free <b>★</b> Non&nbsp;GMO <b>★</b> Vegan <b>★</b> </span>
+    </div>
+    <div class="marquee__group" aria-hidden="true">
+      <span>Pop your protein game <b>★</b> 110+ stores <b>★</b> Gluten free <b>★</b> Non&nbsp;GMO <b>★</b> Vegan <b>★</b> </span>
+      <span>Pop your protein game <b>★</b> 110+ stores <b>★</b> Gluten free <b>★</b> Non&nbsp;GMO <b>★</b> Vegan <b>★</b> </span>
+    </div>
   </div>
 </div>
 
@@ -495,43 +509,58 @@
 <!-- ─────────────────────────── FOOTER ─────────────────────────── -->
 <footer class="foot">
   <div class="marquee marquee--foot" aria-hidden="true">
-    <div class="marquee__track marquee__track--rev">
-      <span>Peanut Butter <b>·</b> Brownie <b>·</b> Spicy Kimchi Cheese <b>·</b> Herb n Zing <b>·</b> </span>
-      <span>Peanut Butter <b>·</b> Brownie <b>·</b> Spicy Kimchi Cheese <b>·</b> Herb n Zing <b>·</b> </span>
+    <div class="marquee__track">
+      <div class="marquee__group">
+        <span>Peanut Butter <b>·</b> Brownie <b>·</b> Spicy Kimchi Cheese <b>·</b> Herb n Zing <b>·</b> </span>
+        <span>Peanut Butter <b>·</b> Brownie <b>·</b> Spicy Kimchi Cheese <b>·</b> Herb n Zing <b>·</b> </span>
+        <span>Peanut Butter <b>·</b> Brownie <b>·</b> Spicy Kimchi Cheese <b>·</b> Herb n Zing <b>·</b> </span>
+      </div>
+      <div class="marquee__group" aria-hidden="true">
+        <span>Peanut Butter <b>·</b> Brownie <b>·</b> Spicy Kimchi Cheese <b>·</b> Herb n Zing <b>·</b> </span>
+        <span>Peanut Butter <b>·</b> Brownie <b>·</b> Spicy Kimchi Cheese <b>·</b> Herb n Zing <b>·</b> </span>
+        <span>Peanut Butter <b>·</b> Brownie <b>·</b> Spicy Kimchi Cheese <b>·</b> Herb n Zing <b>·</b> </span>
+      </div>
     </div>
   </div>
 
-  <div class="wrap foot__grid">
-    <div class="foot__brand">
-      <picture>
-        <source type="image/avif" srcset="/img/brand/poptein-logo-300.avif" />
-        <img src="/img/brand/poptein-logo-300.webp" alt="Poptein" width="300" height="107" loading="lazy" />
-      </picture>
-      <p>India's first protein popcorn. Made in Bengaluru, eaten everywhere.</p>
+  <canvas id="foot-gravity-canvas" class="foot__canvas" aria-hidden="true"></canvas>
+
+  <div class="wrap foot__inner">
+    <div class="foot__brand-wrap">
+      <button class="foot__logo-btn" id="foot-logo-btn" type="button" aria-label="Poptein - Click to pop popcorn!" title="Click to pop popcorn!">
+        <picture>
+          <source type="image/avif" srcset="/img/brand/poptein-logo-300.avif" />
+          <img src="/img/brand/poptein-logo-300.webp" alt="Poptein" width="300" height="107" loading="lazy" />
+        </picture>
+      </button>
+      <div class="foot__meta">
+        <p class="foot__tagline">India's first protein popcorn. Made in Bengaluru, eaten everywhere.</p>
+        <p class="foot__legal">© 2026 Poptein® · Bengaluru, India</p>
+      </div>
     </div>
 
-    <nav class="foot__col" aria-label="Shop">
-      <h2 class="t-eyebrow">Shop</h2>
-      <a href="#flavours">Flavours</a>
-      <a href="#buy">Where to buy</a>
-      <a href="https://wa.me/message/I6T2ZF32KVWOD1" target="_blank" rel="noopener">WhatsApp order</a>
-    </nav>
+    <div class="foot__nav-group">
+      <nav class="foot__col" aria-label="Shop">
+        <h2 class="t-eyebrow">Shop</h2>
+        <a href="#flavours">Flavours</a>
+        <a href="#buy">Where to buy</a>
+        <a href="https://wa.me/message/I6T2ZF32KVWOD1" target="_blank" rel="noopener">WhatsApp order</a>
+      </nav>
 
-    <nav class="foot__col" aria-label="Brand">
-      <h2 class="t-eyebrow">Brand</h2>
-      <a href="#story">Our story</a>
-      <a href="#why">Why Poptein</a>
-      <a href="#faq">FAQ</a>
-    </nav>
+      <nav class="foot__col" aria-label="Brand">
+        <h2 class="t-eyebrow">Brand</h2>
+        <a href="#story">Our story</a>
+        <a href="#why">Why Poptein</a>
+        <a href="#faq">FAQ</a>
+      </nav>
 
-    <nav class="foot__col" aria-label="Follow">
-      <h2 class="t-eyebrow">Follow</h2>
-      <a href="https://www.instagram.com/poptein.india/" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://www.trustpilot.com/review/poptein.in" target="_blank" rel="noopener">Trustpilot</a>
-    </nav>
+      <nav class="foot__col" aria-label="Follow">
+        <h2 class="t-eyebrow">Follow</h2>
+        <a href="https://www.instagram.com/poptein.india/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.trustpilot.com/review/poptein.in" target="_blank" rel="noopener">Trustpilot</a>
+      </nav>
+    </div>
   </div>
-
-  <p class="foot__legal">© 2026 Poptein® · Bengaluru, India</p>
 </footer>
 </body>
 </html>

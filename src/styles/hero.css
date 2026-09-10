@@ -78,21 +78,98 @@
   justify-self: center;
   width: min(72vw, 330px);
 }
+.hero__pack {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .28s cubic-bezier(.34, 1.56, .64, 1);
+}
+.hero__pack:hover {
+  transform: scale(1.03) rotate(-1.5deg);
+}
+.hero__pack:active {
+  transform: scale(0.96) rotate(1deg);
+}
+.hero__pack:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 6px;
+  border-radius: 12px;
+}
 .hero__pack img {
   width: 100%;
   filter: drop-shadow(0 26px 30px rgba(15, 13, 10, .34));
+  transition: filter .28s ease;
 }
-/* the yellow disc behind the pack anchors it in the composition */
+.hero__pack:hover img {
+  filter: drop-shadow(0 32px 36px rgba(15, 13, 10, .42));
+}
+
+.hero__pack.is-popping {
+  animation: heroPackPop 0.45s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+@keyframes heroPackPop {
+  0% { transform: scale(1) rotate(0deg); }
+  35% { transform: scale(0.88) rotate(-6deg) translateY(-8px); }
+  65% { transform: scale(1.08) rotate(4deg) translateY(-14px); }
+  100% { transform: scale(1) rotate(0deg) translateY(0); }
+}
+
+/* clickable hint pill */
+.hero__pack-hint {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--ink);
+  color: var(--yellow);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 100px;
+  box-shadow: 0 6px 16px rgba(15, 13, 10, .28);
+  border: 1.5px solid var(--cream);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), background .2s ease, color .2s ease;
+}
+.hero__pack:hover .hero__pack-hint {
+  transform: translateX(-50%) translateY(-2px) scale(1.05);
+  background: #000;
+  color: #FFF;
+}
+.hero__pack-hint svg {
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+
+/* the disc behind the pack anchors it in the composition and subtly responds to flavours */
 .hero__product::before {
   content: "";
   position: absolute;
   left: 50%; top: 30%;
   width: 96%; aspect-ratio: 1;
   transform: translateX(-50%);
-  background: var(--yellow);
+  background: var(--hero-disc, var(--yellow));
   border: var(--rule);
   border-radius: 50%;
   z-index: -1;
+  transition: background .4s cubic-bezier(.2, .8, .2, 1);
 }
 
 .hero__badge {

@@ -188,3 +188,302 @@ export function initDrift(reduced) {
     if (!frame) frame = requestAnimationFrame(run);
   }, { passive: true });
 }
+
+/* -------------------------------------------------------- hero flavour swap */
+export function initHeroFlavours(reduced) {
+  const btn = document.getElementById('hero-pack-btn') || document.querySelector('.hero__pack');
+  if (!btn) return;
+
+  const FLAVOURS = [
+    {
+      name: 'Peanut Butter',
+      alt: "Poptein Peanut Butter protein popcorn pack, 10g protein per serve",
+      avif: '/img/packs/pack-peanut-butter-340.avif 340w, /img/packs/pack-peanut-butter-500.avif 500w',
+      webp: '/img/packs/pack-peanut-butter-340.webp 340w, /img/packs/pack-peanut-butter-500.webp 500w',
+      src: '/img/packs/pack-peanut-butter-500.webp',
+      discBg: '#FFC93D',
+      crumbAvif: '/img/pops/pop-peanut-butter-200.avif',
+      crumbWebp: '/img/pops/pop-peanut-butter-200.webp'
+    },
+    {
+      name: 'Fudge Brownie',
+      alt: "Poptein Fudge Brownie protein popcorn pack, 10g protein per serve",
+      avif: '/img/packs/pack-brownie-340.avif 340w, /img/packs/pack-brownie-500.avif 500w',
+      webp: '/img/packs/pack-brownie-340.webp 340w, /img/packs/pack-brownie-500.webp 500w',
+      src: '/img/packs/pack-brownie-500.webp',
+      discBg: '#F5CE5C',
+      crumbAvif: '/img/pops/pop-plain-200.avif',
+      crumbWebp: '/img/pops/pop-plain-200.webp'
+    },
+    {
+      name: 'Spicy Kimchi Cheese',
+      alt: "Poptein Spicy Kimchi Cheese protein popcorn pack, 10g protein per serve",
+      avif: '/img/packs/pack-kimchi-340.avif 340w, /img/packs/pack-kimchi-500.avif 500w',
+      webp: '/img/packs/pack-kimchi-340.webp 340w, /img/packs/pack-kimchi-500.webp 500w',
+      src: '/img/packs/pack-kimchi-500.webp',
+      discBg: '#FFB347',
+      crumbAvif: '/img/pops/pop-plain-200.avif',
+      crumbWebp: '/img/pops/pop-plain-200.webp'
+    },
+    {
+      name: "Herb 'N' Zing",
+      alt: "Poptein Herb 'N' Zing protein popcorn pack, 10g protein per serve",
+      avif: '/img/packs/pack-herb-n-zing-340.avif 340w, /img/packs/pack-herb-n-zing-500.avif 500w',
+      webp: '/img/packs/pack-herb-n-zing-340.webp 340w, /img/packs/pack-herb-n-zing-500.webp 500w',
+      src: '/img/packs/pack-herb-n-zing-500.webp',
+      discBg: '#E6F25A',
+      crumbAvif: '/img/pops/pop-plain-200.avif',
+      crumbWebp: '/img/pops/pop-plain-200.webp'
+    }
+  ];
+
+  // Preload all flavour pack images so switches are instant
+  FLAVOURS.forEach((f) => {
+    const img = new Image();
+    img.src = f.src;
+  });
+
+  const sourceEl = document.getElementById('hero-pack-source') || btn.querySelector('source');
+  const imgEl = document.getElementById('hero-pack-img') || btn.querySelector('img');
+  const nameEl = document.getElementById('hero-pack-flavour-name');
+  const productEl = document.querySelector('.hero__product');
+  const crumbSource = document.getElementById('hero-crumb-a-source');
+  const crumbImg = document.getElementById('hero-crumb-a-img');
+
+  let currentIndex = 0;
+  let isAnimating = false;
+
+  const applyFlavour = (idx) => {
+    const flavour = FLAVOURS[idx];
+    if (sourceEl) sourceEl.srcset = flavour.avif;
+    if (imgEl) {
+      imgEl.src = flavour.src;
+      imgEl.srcset = flavour.webp;
+      imgEl.alt = flavour.alt;
+    }
+    if (nameEl) nameEl.textContent = flavour.name;
+    if (productEl && flavour.discBg) {
+      productEl.style.setProperty('--hero-disc', flavour.discBg);
+    }
+    if (crumbSource) crumbSource.srcset = flavour.crumbAvif;
+    if (crumbImg) crumbImg.src = flavour.crumbWebp;
+    
+    const nextFlavour = FLAVOURS[(idx + 1) % FLAVOURS.length];
+    btn.setAttribute('aria-label', `Switch flavour (currently ${flavour.name}). Click to see ${nextFlavour.name}`);
+  };
+
+  const switchFlavour = () => {
+    if (isAnimating) return;
+    currentIndex = (currentIndex + 1) % FLAVOURS.length;
+
+    if (!reduced) {
+      isAnimating = true;
+      btn.classList.add('is-popping');
+      
+      setTimeout(() => {
+        applyFlavour(currentIndex);
+      }, 150);
+
+      setTimeout(() => {
+        btn.classList.remove('is-popping');
+        isAnimating = false;
+      }, 450);
+    } else {
+      applyFlavour(currentIndex);
+    }
+  };
+
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    switchFlavour();
+  });
+
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      switchFlavour();
+    }
+  });
+}
+
+/* ---------------------------------------------------- footer gravity popcorn */
+export function initFooterGravity(reduced) {
+  const logoBtn = document.getElementById('foot-logo-btn');
+  const canvas = document.getElementById('foot-gravity-canvas');
+  if (!logoBtn || !canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const imgPop1 = new Image();
+  imgPop1.src = '/img/pops/pop-peanut-butter-200.webp';
+  const imgPop2 = new Image();
+  imgPop2.src = '/img/pops/pop-plain-200.webp';
+  const images = [imgPop1, imgPop2];
+
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = rect.width;
+    height = rect.height;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
+  window.addEventListener('resize', resize, { passive: true });
+  resize();
+
+  const particles = [];
+  let animId = null;
+
+  class PopcornParticle {
+    constructor(startX, startY) {
+      this.x = startX + (Math.random() - 0.5) * 36;
+      this.y = startY + (Math.random() - 0.5) * 16;
+      
+      const angle = (Math.random() * 0.7 + 0.15) * Math.PI;
+      const speed = Math.random() * 11 + 10;
+      this.vx = Math.cos(angle) * speed * (Math.random() > 0.5 ? 1 : -1);
+      this.vy = -Math.sin(angle) * speed - Math.random() * 4;
+      
+      this.radius = Math.random() * 9 + 15;
+      this.gravity = 0.68;
+      this.bounce = Math.random() * 0.15 + 0.45;
+      this.friction = 0.88;
+      
+      this.rotation = Math.random() * Math.PI * 2;
+      this.vRot = (Math.random() - 0.5) * 0.26;
+      
+      this.img = images[Math.floor(Math.random() * images.length)];
+      this.opacity = 1;
+      this.settled = false;
+      this.settledFrames = 0;
+      this.maxSettledFrames = 180 + Math.floor(Math.random() * 100);
+      this.isDead = false;
+    }
+
+    update() {
+      if (this.settled) {
+        this.settledFrames++;
+        if (this.settledFrames > this.maxSettledFrames) {
+          this.opacity -= 0.02;
+          if (this.opacity <= 0) {
+            this.isDead = true;
+          }
+        }
+        return;
+      }
+
+      this.vy += this.gravity;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.rotation += this.vRot;
+
+      const floorY = height - this.radius - 4;
+
+      if (this.y >= floorY) {
+        this.y = floorY;
+        this.vy = -this.vy * this.bounce;
+        this.vx *= this.friction;
+        this.vRot *= this.friction;
+
+        if (Math.abs(this.vy) < 1.3 && Math.abs(this.vx) < 0.5) {
+          this.settled = true;
+          this.vy = 0;
+          this.vx = 0;
+          this.vRot = 0;
+        }
+      }
+
+      if (this.x - this.radius <= 0) {
+        this.x = this.radius;
+        this.vx = -this.vx * 0.6;
+      } else if (this.x + this.radius >= width) {
+        this.x = width - this.radius;
+        this.vx = -this.vx * 0.6;
+      }
+    }
+
+    draw(c) {
+      c.save();
+      c.globalAlpha = Math.max(0, Math.min(1, this.opacity));
+      c.translate(this.x, this.y);
+      c.rotate(this.rotation);
+
+      if (this.img.complete && this.img.naturalWidth > 0) {
+        c.drawImage(this.img, -this.radius, -this.radius, this.radius * 2, this.radius * 2);
+      } else {
+        c.fillStyle = '#FFE3A8';
+        c.strokeStyle = '#0F0D0A';
+        c.lineWidth = 2;
+        c.beginPath();
+        c.arc(0, 0, this.radius, 0, Math.PI * 2);
+        c.fill();
+        c.stroke();
+      }
+      c.restore();
+    }
+  }
+
+  const loop = () => {
+    ctx.clearRect(0, 0, width, height);
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.update();
+      p.draw(ctx);
+      if (p.isDead) {
+        particles.splice(i, 1);
+      }
+    }
+
+    if (particles.length > 0) {
+      animId = requestAnimationFrame(loop);
+    } else {
+      animId = null;
+    }
+  };
+
+  const spawnPopcorn = () => {
+    resize();
+    const btnRect = logoBtn.getBoundingClientRect();
+    const canvasRect = canvas.getBoundingClientRect();
+
+    const startX = btnRect.left - canvasRect.left + btnRect.width * 0.5;
+    const startY = btnRect.top - canvasRect.top + btnRect.height * 0.4;
+
+    const count = reduced ? 8 : 18;
+    for (let i = 0; i < count; i++) {
+      particles.push(new PopcornParticle(startX, startY));
+    }
+
+    if (particles.length > 120) {
+      particles.splice(0, particles.length - 120);
+    }
+
+    if (!animId) {
+      animId = requestAnimationFrame(loop);
+    }
+
+    logoBtn.classList.remove('is-popping');
+    void logoBtn.offsetWidth;
+    logoBtn.classList.add('is-popping');
+  };
+
+  logoBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    spawnPopcorn();
+  });
+
+  logoBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      spawnPopcorn();
+    }
+  });
+}

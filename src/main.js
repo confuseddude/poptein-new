@@ -9,7 +9,7 @@ import './styles/sections.css';
 
 import { initLoader } from './js/loader.js';
 import { initOrbit } from './js/orbit.js';
-import { initNav, initFaq, initReveal, initDrift, initAmbient } from './js/ui.js';
+import { initNav, initFaq, initReveal, initDrift, initAmbient, initHeroFlavours, initFooterGravity } from './js/ui.js';
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -19,6 +19,8 @@ document.documentElement.classList.add('js-ready');
 
 initNav();
 initFaq(reduced);
+initHeroFlavours(reduced);
+initFooterGravity(reduced);
 initOrbit(reduced);
 initDrift(reduced);
 initAmbient(reduced);
