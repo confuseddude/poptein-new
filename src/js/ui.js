@@ -294,11 +294,14 @@ export function initHeroFlavours(reduced) {
   };
 
   /* a swipe ends in a synthesised click on some browsers — swallow that one */
-  let swiped = false;
+  let swipedAt = 0;
+  const SWIPE_CLICK_GUARD = 400;   // ms
 
   btn.addEventListener('click', (e) => {
     e.preventDefault();
-    if (swiped) { swiped = false; return; }
+    // a swipe can end in a synthesised click — swallow only that one, and only
+    // while it could plausibly belong to the gesture that just fired
+    if (performance.now() - swipedAt < SWIPE_CLICK_GUARD) return;
     switchFlavour();
   });
 
@@ -312,15 +315,37 @@ export function initHeroFlavours(reduced) {
   });
 
   /* --- horizontal gestures: left = next flavour, right = previous ---------
-     Touch swipe and trackpad wheel both feed the same one-step-per-gesture
-     path. The axis is decided as early as the first few pixels; anything that
-     isn't clearly horizontal is handed straight back to the page, so vertical
-     scrolling is never touched and nothing scrolls horizontally. */
+
+     Touch/pen goes through pointer events; the trackpad goes through wheel.
+     Both feed one shared decision so the rules can't drift apart.
+
+     Vertical scrolling is left entirely to the browser. `touch-action: pan-y`
+     on the surface means the browser will never pan horizontally there, so a
+     horizontal gesture is ours by construction and needs no preventDefault —
+     every touch listener stays passive. If the gesture turns out to be a
+     scroll, the browser takes it and sends us `pointercancel`.
+
+     Deliberately NOT an early axis lock: a real finger rolls, and the first
+     few pixels of a firm horizontal swipe are often vertical-dominant noise.
+     Committing to an axis at that point kills the gesture. Instead we simply
+     wait until the horizontal travel is both big enough and clearly dominant,
+     whenever in the gesture that happens. */
   const zone = productEl || btn;
 
+  /* The gesture surface is the pack itself plus the empty space around it, so
+     a thumb anywhere over the product composition works. This pad sits at
+     z-index -1 — behind the pack, so the button keeps every click, and behind
+     the headline and pitch, so their own hit areas are untouched. It paints
+     nothing and takes no layout space. */
+  if (productEl && !productEl.querySelector('.hero__swipe-pad')) {
+    const pad = document.createElement('span');
+    pad.className = 'hero__swipe-pad';
+    pad.setAttribute('aria-hidden', 'true');
+    productEl.appendChild(pad);
+  }
+
   const SWIPE_MIN = 24;     // px of horizontal travel that counts as a swipe
-  const AXIS_LOCK = 5;      // px of movement before we commit to an axis
-  const DOMINANCE = 1.2;    // horizontal has to beat vertical by this much
+  const DOMINANCE = 1.15;   // horizontal has to beat vertical by this much
   const WHEEL_MIN = 26;     // accumulated px of horizontal wheel delta
   const COOLDOWN = 470;     // ms — just past the existing pop, so no skipping
   const WHEEL_IDLE = 140;   // ms of quiet that ends a trackpad gesture
@@ -334,44 +359,77 @@ export function initHeroFlavours(reduced) {
     return true;
   };
 
-  /* touch */
-  let sx = 0;
-  let sy = 0;
-  let axis = null;
-  let tracking = false;
+  /* shared drag state machine — fed by pointer events, or by touch events on
+     anything too old to have them */
+  let dragging = false;
+  let fired = false;
+  let ox = 0;
+  let oy = 0;
 
-  zone.addEventListener('touchstart', (e) => {
-    if (e.touches.length !== 1) { tracking = false; return; }
-    tracking = true;
-    swiped = false;
-    axis = null;
-    sx = e.touches[0].clientX;
-    sy = e.touches[0].clientY;
-  }, { passive: true });
+  const dragStart = (x, y) => {
+    dragging = true;
+    fired = false;
+    ox = x;
+    oy = y;
+  };
 
-  zone.addEventListener('touchmove', (e) => {
-    if (!tracking || axis === 'y') return;
-    const dx = e.touches[0].clientX - sx;
-    const dy = e.touches[0].clientY - sy;
-    const ax = Math.abs(dx);
-    const ay = Math.abs(dy);
-
-    if (!axis) {
-      if (ax < AXIS_LOCK && ay < AXIS_LOCK) return;
-      // only a clearly horizontal gesture is ours — a diagonal goes to the page
-      axis = ax > ay * DOMINANCE ? 'x' : 'y';
-      if (axis === 'y') return;
-    }
-
-    if (e.cancelable) e.preventDefault();
-    if (swiped || ax < SWIPE_MIN) return;
-    swiped = true;                 // one step per gesture, however far it runs
+  const dragMove = (x, y) => {
+    if (!dragging || fired) return false;      // one flavour per gesture
+    const dx = x - ox;
+    const dy = y - oy;
+    if (Math.abs(dx) < SWIPE_MIN) return false;
+    if (Math.abs(dx) <= Math.abs(dy) * DOMINANCE) return false;
+    fired = true;
+    swipedAt = performance.now();   // swallow this gesture's synthesised click
     step(dx < 0 ? 1 : -1);
-  }, { passive: false });
+    return true;
+  };
 
-  const endSwipe = () => { tracking = false; axis = null; };
-  zone.addEventListener('touchend', endSwipe, { passive: true });
-  zone.addEventListener('touchcancel', endSwipe, { passive: true });
+  const dragEnd = () => { dragging = false; };
+
+  if (window.PointerEvent) {
+    let pid = null;
+
+    zone.addEventListener('pointerdown', (e) => {
+      // mouse keeps its existing behaviour — click switches, drag does nothing
+      if (!e.isPrimary || e.pointerType === 'mouse') return;
+      pid = e.pointerId;
+      dragStart(e.clientX, e.clientY);
+    }, { passive: true });
+
+    zone.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== pid) return;
+      if (dragMove(e.clientX, e.clientY)) {
+        /* hold the rest of the gesture so a re-render under the finger, or the
+           pop animation moving the pack, can't strand us mid-swipe */
+        try { zone.setPointerCapture(pid); } catch { /* pointer already gone */ }
+      }
+    }, { passive: true });
+
+    const pointerDone = (e) => {
+      if (e.pointerId !== pid) return;
+      if (zone.hasPointerCapture?.(pid)) {
+        try { zone.releasePointerCapture(pid); } catch { /* already released */ }
+      }
+      pid = null;
+      dragEnd();
+    };
+    zone.addEventListener('pointerup', pointerDone, { passive: true });
+    zone.addEventListener('pointercancel', pointerDone, { passive: true });
+  } else {
+    zone.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) { dragEnd(); return; }
+      dragStart(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+
+    zone.addEventListener('touchmove', (e) => {
+      if (!e.touches.length) return;
+      dragMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+
+    zone.addEventListener('touchend', dragEnd, { passive: true });
+    zone.addEventListener('touchcancel', dragEnd, { passive: true });
+  }
 
   /* trackpad / horizontal wheel */
   let wheelAcc = 0;
