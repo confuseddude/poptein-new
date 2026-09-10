@@ -77,6 +77,8 @@
   z-index: 3;
   justify-self: center;
   width: min(72vw, 330px);
+  /* vertical scrolling stays native; horizontal gestures are the flavour swipe */
+  touch-action: pan-y pinch-zoom;
 }
 .hero__pack {
   display: block;
@@ -87,7 +89,7 @@
   margin: 0;
   cursor: pointer;
   outline: none;
-  touch-action: manipulation;
+  touch-action: pan-y pinch-zoom;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition: transform .28s cubic-bezier(.34, 1.56, .64, 1);

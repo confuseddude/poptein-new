@@ -5,7 +5,9 @@ export default defineConfig({
     target: 'es2020',
     cssTarget: 'chrome87',
     assetsInlineLimit: 2048,
-    reportCompressedSize: true
+    reportCompressedSize: true,
+    // single entry, no dynamic imports — the polyfill has nothing to preload
+    modulePreload: { polyfill: false }
   },
   server: { host: '127.0.0.1', port: 5173 }
 });

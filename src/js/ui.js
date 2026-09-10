@@ -237,11 +237,11 @@ export function initHeroFlavours(reduced) {
     }
   ];
 
-  // Preload all flavour pack images so switches are instant
-  FLAVOURS.forEach((f) => {
-    const img = new Image();
-    img.src = f.src;
-  });
+  // Preload all flavour pack images so switches are instant. Deferred to idle
+  // so four extra pack downloads never compete with the hero's own render.
+  const preload = () => FLAVOURS.forEach((f) => { new Image().src = f.src; });
+  if ('requestIdleCallback' in window) requestIdleCallback(preload, { timeout: 2500 });
+  else setTimeout(preload, 1200);
 
   const sourceEl = document.getElementById('hero-pack-source') || btn.querySelector('source');
   const imgEl = document.getElementById('hero-pack-img') || btn.querySelector('img');
@@ -272,9 +272,9 @@ export function initHeroFlavours(reduced) {
     btn.setAttribute('aria-label', `Switch flavour (currently ${flavour.name}). Click to see ${nextFlavour.name}`);
   };
 
-  const switchFlavour = () => {
+  const switchFlavour = (dir = 1) => {
     if (isAnimating) return;
-    currentIndex = (currentIndex + 1) % FLAVOURS.length;
+    currentIndex = (currentIndex + dir + FLAVOURS.length) % FLAVOURS.length;
 
     if (!reduced) {
       isAnimating = true;
@@ -293,8 +293,12 @@ export function initHeroFlavours(reduced) {
     }
   };
 
+  /* a swipe ends in a synthesised click on some browsers — swallow that one */
+  let swiped = false;
+
   btn.addEventListener('click', (e) => {
     e.preventDefault();
+    if (swiped) { swiped = false; return; }
     switchFlavour();
   });
 
@@ -303,7 +307,106 @@ export function initHeroFlavours(reduced) {
       e.preventDefault();
       switchFlavour();
     }
+    if (e.key === 'ArrowRight') { e.preventDefault(); switchFlavour(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); switchFlavour(-1); }
   });
+
+  /* --- horizontal gestures: left = next flavour, right = previous ---------
+     Touch swipe and trackpad wheel both feed the same one-step-per-gesture
+     path. The axis is decided as early as the first few pixels; anything that
+     isn't clearly horizontal is handed straight back to the page, so vertical
+     scrolling is never touched and nothing scrolls horizontally. */
+  const zone = productEl || btn;
+
+  const SWIPE_MIN = 24;     // px of horizontal travel that counts as a swipe
+  const AXIS_LOCK = 5;      // px of movement before we commit to an axis
+  const DOMINANCE = 1.2;    // horizontal has to beat vertical by this much
+  const WHEEL_MIN = 26;     // accumulated px of horizontal wheel delta
+  const COOLDOWN = 470;     // ms — just past the existing pop, so no skipping
+  const WHEEL_IDLE = 140;   // ms of quiet that ends a trackpad gesture
+
+  let lastStep = 0;
+  const step = (dir) => {
+    const now = performance.now();
+    if (now - lastStep < COOLDOWN) return false;
+    lastStep = now;
+    switchFlavour(dir);
+    return true;
+  };
+
+  /* touch */
+  let sx = 0;
+  let sy = 0;
+  let axis = null;
+  let tracking = false;
+
+  zone.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) { tracking = false; return; }
+    tracking = true;
+    swiped = false;
+    axis = null;
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+  }, { passive: true });
+
+  zone.addEventListener('touchmove', (e) => {
+    if (!tracking || axis === 'y') return;
+    const dx = e.touches[0].clientX - sx;
+    const dy = e.touches[0].clientY - sy;
+    const ax = Math.abs(dx);
+    const ay = Math.abs(dy);
+
+    if (!axis) {
+      if (ax < AXIS_LOCK && ay < AXIS_LOCK) return;
+      // only a clearly horizontal gesture is ours — a diagonal goes to the page
+      axis = ax > ay * DOMINANCE ? 'x' : 'y';
+      if (axis === 'y') return;
+    }
+
+    if (e.cancelable) e.preventDefault();
+    if (swiped || ax < SWIPE_MIN) return;
+    swiped = true;                 // one step per gesture, however far it runs
+    step(dx < 0 ? 1 : -1);
+  }, { passive: false });
+
+  const endSwipe = () => { tracking = false; axis = null; };
+  zone.addEventListener('touchend', endSwipe, { passive: true });
+  zone.addEventListener('touchcancel', endSwipe, { passive: true });
+
+  /* trackpad / horizontal wheel */
+  let wheelAcc = 0;
+  let wheelAt = 0;
+  let wheelFired = false;
+
+  zone.addEventListener('wheel', (e) => {
+    // deltaMode 1 = lines, 2 = pages; normalise everything to pixels
+    const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? zone.clientHeight : 1;
+    const dx = e.deltaX * unit;
+    const dy = e.deltaY * unit;
+    if (Math.abs(dx) <= Math.abs(dy) * DOMINANCE) return;   // vertical: let it scroll
+
+    e.preventDefault();
+    const now = performance.now();
+
+    // a quiet gap means the previous gesture ended — start a fresh one
+    if (now - wheelAt > WHEEL_IDLE) {
+      wheelAcc = 0;
+      wheelFired = false;
+    }
+    wheelAt = now;
+
+    // trackpad momentum keeps firing after the flick; swallow it so one
+    // gesture never skips ahead
+    if (wheelFired) { wheelAcc = 0; return; }
+
+    if (wheelAcc && Math.sign(dx) !== Math.sign(wheelAcc)) wheelAcc = 0;
+    wheelAcc += dx;
+
+    if (Math.abs(wheelAcc) < WHEEL_MIN) return;
+    const dir = wheelAcc < 0 ? -1 : 1;   // swipe left on a trackpad = +deltaX
+    wheelAcc = 0;
+    wheelFired = step(dir);
+  }, { passive: false });
 }
 
 /* ---------------------------------------------------- footer gravity popcorn */
@@ -327,15 +430,25 @@ export function initFooterGravity(reduced) {
 
   const resize = () => {
     const rect = canvas.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const nextDpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.round(rect.width * nextDpr);
+    const h = Math.round(rect.height * nextDpr);
+    /* reallocating the backing store is the costly part — only do it when the
+       numbers actually moved (mobile fires resize on every address-bar shift) */
+    if (w === canvas.width && h === canvas.height && width > 0) return;
+    dpr = nextDpr;
     width = rect.width;
     height = rect.height;
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
+    canvas.width = w;
+    canvas.height = h;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
 
-  window.addEventListener('resize', resize, { passive: true });
+  let resizeFrame = 0;
+  window.addEventListener('resize', () => {
+    if (resizeFrame) return;
+    resizeFrame = requestAnimationFrame(() => { resizeFrame = 0; resize(); });
+  }, { passive: true });
   resize();
 
   const particles = [];

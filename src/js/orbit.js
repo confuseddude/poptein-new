@@ -96,6 +96,9 @@ export function initOrbit(reduced) {
   let frame = 0;
   let popUntil = 0;
   const lastBlur = new Array(packs.length).fill(-1);
+  const lastZ = new Array(packs.length).fill(-1);
+  const lastFront = new Array(packs.length).fill(null);
+  let sectionH = 0;              // cached: reading offsetHeight per scroll forces layout
 
   /* --- measurement -------------------------------------------------------- */
   function measure() {
@@ -119,18 +122,20 @@ export function initOrbit(reduced) {
         ? 'Swipe to explore'
         : 'Scroll to rotate · click a pack';
     }
+    /* .orbit is 380vh — viewport-derived, so it only ever changes on resize */
+    sectionH = root.offsetHeight;
   }
 
   /* --- scroll → angle ----------------------------------------------------- */
   function readScroll() {
-    const travel = root.offsetHeight - window.innerHeight;
+    const travel = sectionH - window.innerHeight;
     if (travel <= 0) return;
     const p = clamp(-root.getBoundingClientRect().top / travel, 0, 1);
     target = p * SPAN;
   }
 
   function scrollToIndex(i) {
-    const travel = root.offsetHeight - window.innerHeight;
+    const travel = sectionH - window.innerHeight;
     if (travel <= 0) return;
     const top = window.scrollY + root.getBoundingClientRect().top +
       (i / (FLAVOURS.length - 1)) * travel;
@@ -203,7 +208,12 @@ export function initOrbit(reduced) {
         `translate(-50%, -50%) translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)` +
         ` scale(${scale.toFixed(3)}) rotate(${rot.toFixed(1)}deg)`;
       el.style.opacity = (0.26 + 0.74 * t).toFixed(2);
-      el.style.zIndex = String(Math.round(t * 100));
+
+      const z = Math.round(t * 100);
+      if (z !== lastZ[i]) {
+        lastZ[i] = z;
+        el.style.zIndex = String(z);
+      }
 
       // blur is quantised — only rewrite the filter when the step changes
       const blur = Math.round((1 - t) * 8) / 2;
@@ -211,8 +221,11 @@ export function initOrbit(reduced) {
         lastBlur[i] = blur;
         el.style.filter = blur ? `blur(${blur}px)` : '';
       }
-      el.tabIndex = front ? 0 : -1;
-      el.setAttribute('aria-hidden', front ? 'false' : 'true');
+      if (front !== lastFront[i]) {
+        lastFront[i] = front;
+        el.tabIndex = front ? 0 : -1;
+        el.setAttribute('aria-hidden', front ? 'false' : 'true');
+      }
     }
 
     // keep animating while we're still settling or mid-pop
